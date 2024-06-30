@@ -35,7 +35,7 @@ namespace BliFunc
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            response.WriteString("‚à‚¤1‚Âƒnƒƒ");
+            response.WriteString("ã‚‚ã†1ã¤ãƒãƒ­ãƒ¯");
 
             return response;
         }
@@ -48,7 +48,7 @@ namespace BliFunc
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            response.WriteString("‚È‚ñ‚Æ3‚Â‚ß‚ÌŠÖ”");
+            response.WriteString("ãªã‚“ã¨3ã¤ã‚ã®é–¢æ•°");
 
             return response;
         }
