@@ -22,7 +22,20 @@ namespace BliFunc
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
-            response.WriteString("Welcome to Azure Functions!");
+            response.WriteString("Welcome to Azure Functions! Hello Work!!");
+
+            return response;
+        }
+
+        [Function("Function2")]
+        public HttpResponseData Run2([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("C# HTTP trigger function processed a request.");
+
+            var response = req.CreateResponse(HttpStatusCode.OK);
+            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
+
+            response.WriteString("Ç‡Ç§1Ç¬ÉnÉçÉè");
 
             return response;
         }
