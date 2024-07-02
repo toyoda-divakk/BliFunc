@@ -39,18 +39,5 @@ namespace BliFunc.Functions
 
             return response;
         }
-
-        [Function("Function3")]
-        public HttpResponseData Run3([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
-        {
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
-
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-
-            response.WriteString("なんと3つめの関数");
-
-            return response;
-        }
     }
 }
