@@ -4,14 +4,13 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DesktopAssistant.Core.Contracts.Interfaces;
-using DesktopAssistant.Core.Contracts.Services;
-using DesktopAssistant.Core.Enums;
+using BliFunc.Library.Enums;
+using BliFunc.Library.Interfaces;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
 
-namespace DesktopAssistant.Core.Services;
+namespace BliFunc.Library.Services;
 
 // https://zenn.dev/microsoft/articles/semantic-kernel-v1-004
 // 呼び方
@@ -27,6 +26,8 @@ public class SemanticService : ISemanticService
     public async Task<string> TestAsync(IApiSetting settings) => await TestGenerativeAIAsync(settings, """Hello, world! と表示する C# のプログラムを書いてください。""");
 
     private Kernel _kernel = null;
+
+    public string Test() => "Hello, work!";
 
     /// <summary>
     /// APIキーからKernelを作成する
@@ -118,14 +119,16 @@ public class SemanticService : ISemanticService
 
         // historyの最後がUserMessageなら、それを削除する
         var last = history.Last();
-        
-        if (last.Role == AuthorRole.Assistant) {
+
+        if (last.Role == AuthorRole.Assistant)
+        {
             // 最後から2件を削除する、最後から2件目の内容を控える
             var last2 = history[^2];
             history.RemoveRange(history.Count - 2, 2);
             return last2.InnerContent;
         }
-        else if (last.Role == AuthorRole.User) {
+        else if (last.Role == AuthorRole.User)
+        {
             history.Remove(last);
         }
         // AuthorRole.Toolの時は想定しない

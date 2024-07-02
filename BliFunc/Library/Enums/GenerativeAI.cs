@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesktopAssistant.Core.Enums;
+namespace BliFunc.Library.Enums;
 
 /// <summary>
 /// 生成AIサービス

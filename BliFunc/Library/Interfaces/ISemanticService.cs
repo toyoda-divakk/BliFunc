@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DesktopAssistant.Core.Contracts.Interfaces;
 using Microsoft.SemanticKernel.ChatCompletion;
 
-namespace DesktopAssistant.Core.Contracts.Services;
+namespace BliFunc.Library.Interfaces;
 
 /// <summary>
 /// とりあえずSemanticKernelをラッピングする
@@ -53,5 +52,7 @@ public interface ISemanticService
     /// <param name="history"></param>
     /// <returns></returns>
     public object? RemoveLastMessage(ChatHistory history);
+
+    public string Test();
 #nullable disable
 }

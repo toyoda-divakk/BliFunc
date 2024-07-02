@@ -1,6 +1,6 @@
-﻿using DesktopAssistant.Core.Enums;
+﻿using BliFunc.Library.Enums;
 
-namespace DesktopAssistant.Core.Contracts.Interfaces;
+namespace BliFunc.Library.Interfaces;
 
 /// <summary>
 /// APIに関する設定項目のインターフェース
@@ -55,5 +55,5 @@ public interface IApiSetting
     /// APIテストが済んでいるか
     /// ※面倒なのでtrueにしておく。後で実装するならfalseにする
     /// </summary>
-     bool IsApiTested { get; }
+    bool IsApiTested { get; }
 }
