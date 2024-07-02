@@ -42,5 +42,20 @@ namespace BliFunc.Functions
 
             return response;
         }
+
+        // DB更新するとキックされるらしい。蹴る関数名はAzureのDBの統合のAzure関数の追加で設定
+        [Function("BlizardContainerTrigger")]
+        public HttpResponseData BlizardContainerTrigger([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("DB更新");
+
+            var response = AddHeader(req);
+            response.WriteString("DB更新したらしいよ");
+
+            return response;
+        }
+
+
+
     }
 }

@@ -13,6 +13,10 @@ URLはホストキーと関数キーがある。
 
 # 関数の作成
 
+# DB接続
+Azure.CosmosをNugetする。
+設定ファイルに、"EndpointUri"と"PrimaryKey"を設定する。この値はAzureDBのクイックスタートから取れた。
+
 # トラブル
 ## 文字化けする
 一番最初からあるFunction.csは、実はSJISで保存されている。
