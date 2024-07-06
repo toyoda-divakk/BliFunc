@@ -1,5 +1,9 @@
-﻿namespace BliFunc.Models
+﻿using Newtonsoft.Json;
+
+namespace BliFunc.Models
 {
+    // idとpartitionKeyはCosmosDBの仕様に合わせなければならない。
+
     /// <summary>
     /// 日付と工数
     /// </summary>
@@ -8,12 +12,14 @@
         /// <summary>
         /// Cosmos DBのドキュメントID
         /// </summary>
+        [JsonProperty(PropertyName = "id")]
         public string Id { get; set; }
 
         /// <summary>
         /// パーティションキー
         /// 年月を6桁の文字列で表現したもの。
         /// </summary>
+        [JsonProperty(PropertyName = "partitionKey")]
         public string PartitionKey { get; set; } = string.Empty;
 
         /// <summary>
