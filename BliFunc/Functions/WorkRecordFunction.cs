@@ -5,6 +5,7 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Utf8Json;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace BliFunc.Functions
 {
@@ -54,6 +55,24 @@ namespace BliFunc.Functions
             var data = JsonSerializer.Deserialize<WorkRecord>(requestBody);
 
             return function.AddHeader(req, data.ToString());
+        }
+
+        [Function("Testp")]
+        public async Task<HttpResponseData> TestPAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("POSTテスト");
+            string requestBody = "";
+            try
+            {
+                requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+                var data = JsonSerializer.Deserialize<WorkRecord>(requestBody);
+                return function.AddHeader(req, requestBody);
+            }
+            catch (Exception ex)
+            {
+                return function.AddHeader(req, ex.Message);
+                throw;
+            }
         }
 
         //[Function("AddWorkRecord")]
