@@ -28,18 +28,10 @@ namespace BliFunc.Functions
                 return function.AddHeader(req, "工数登録に失敗しました。");
             }
 
-            await workRecord.AddRecordAsync(work);
+            var message = await workRecord.AddRecordAsync(work);
 
-            return function.AddHeader(req, "工数登録が完了しました。");
+            return function.AddHeader(req, "工数登録が完了しました。" + message);
         }
-
-        //[Function("TestPost")]
-        //public HttpResponseData TestPost([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
-        //{
-        //    _logger.LogInformation("POSTテスト");
-
-        //    return function.AddHeader(req, work.ToString());
-        //}
 
         [Function("TestPost")]
         public async Task<HttpResponseData> TestPostAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
@@ -49,25 +41,7 @@ namespace BliFunc.Functions
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var data = JsonConvert.DeserializeObject<WorkRecord>(requestBody);
 
-            return function.AddHeader(req, data!.ToString());
-        }
-
-        [Function("Testp")]
-        public async Task<HttpResponseData> TestPAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
-        {
-            _logger.LogInformation("POSTテスト");
-            string requestBody = "";
-            try
-            {
-                requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-                var data = JsonConvert.DeserializeObject<WorkRecord>(requestBody);
-                return function.AddHeader(req, requestBody);
-            }
-            catch (Exception ex)
-            {
-                return function.AddHeader(req, ex.Message);
-                throw;
-            }
+            return function.AddHeader(req, data!.ToString());   // ここまでは出来てる。
         }
 
         //// DB更新するとキックされるらしい。蹴る関数名はAzureのDBの統合のAzure関数の追加で設定
