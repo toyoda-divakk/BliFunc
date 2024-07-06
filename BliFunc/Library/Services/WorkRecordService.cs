@@ -82,6 +82,12 @@ namespace BliFunc.Library.Services
         /// <returns></returns>
         public async Task CreateDatabaseAndContainerAsync()
         {
+            if (string.IsNullOrEmpty(EndpointUri) || string.IsNullOrEmpty(PrimaryKey) || string.IsNullOrEmpty(DatabaseId) || string.IsNullOrEmpty(ContainerId))
+            {
+                _logger.LogError("環境変数が設定されていません。");
+                return;
+            }
+
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = await client.CreateDatabaseIfNotExistsAsync(DatabaseId);
             var container = await database.Database.CreateContainerIfNotExistsAsync(ContainerId, "/partitionKey");

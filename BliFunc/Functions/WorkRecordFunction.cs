@@ -4,6 +4,7 @@ using BliFunc.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Utf8Json;
 
 namespace BliFunc.Functions
 {
@@ -12,33 +13,47 @@ namespace BliFunc.Functions
         private readonly ILogger _logger = loggerFactory.CreateLogger<AnotherFunction>();
 
         [Function("RecordWork")]
-        public async Task<HttpResponseData> AddAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
+        public async Task<HttpResponseData> AddAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
         {
-            _logger.LogInformation("H”“o˜^");
+            _logger.LogInformation("å·¥æ•°ç™»éŒ²");
 
             await workRecord.CreateDatabaseAndContainerAsync();
 
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var work = JsonSerializer.Deserialize<WorkRecord>(requestBody);
+
             await workRecord.AddRecordAsync(work);
 
-            return function.AddHeader(req, "H”“o˜^‚ªŠ®—¹‚µ‚Ü‚µ‚½B");
+            return function.AddHeader(req, "å·¥æ•°ç™»éŒ²ãŒå®Œäº†ã—ã¾ã—ãŸã€‚");
         }
 
         [Function("TestDb")]
         public async Task<HttpResponseData> TestDbAsync([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
         {
-            _logger.LogInformation("DBƒeƒXƒg");
+            _logger.LogInformation("DBãƒ†ã‚¹ãƒˆ");
 
             await workRecord.CreateDatabaseAndContainerAsync();
 
-            return function.AddHeader(req, "DB‚ğì‚è‚Ü‚µ‚½B");
+            return function.AddHeader(req, "DBã‚’ä½œã‚Šã¾ã—ãŸã€‚");
         }
 
-        [Function("TestPost")]
-        public HttpResponseData TestPost([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
-        {
-            _logger.LogInformation("POSTƒeƒXƒg");
+        //[Function("TestPost")]
+        //public HttpResponseData TestPost([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
+        //{
+        //    _logger.LogInformation("POSTãƒ†ã‚¹ãƒˆ");
 
-            return function.AddHeader(req, work.ToString());
+        //    return function.AddHeader(req, work.ToString());
+        //}
+
+        [Function("TestPost")]
+        public async Task<HttpResponseData> TestPostAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req)
+        {
+            _logger.LogInformation("POSTãƒ†ã‚¹ãƒˆ");
+
+            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var data = JsonSerializer.Deserialize<WorkRecord>(requestBody);
+
+            return function.AddHeader(req, data.ToString());
         }
 
         //[Function("AddWorkRecord")]
@@ -52,30 +67,30 @@ namespace BliFunc.Functions
         //    return response;
         //}
 
-        //// ŠÂ‹«•Ï”‚ÌƒeƒXƒg
-        //// local.settings.json‚Éİ’è
-        //// ƒT[ƒo[‚Å‚à–Y‚ê‚¸‚Éİ’è
+        //// ç’°å¢ƒå¤‰æ•°ã®ãƒ†ã‚¹ãƒˆ
+        //// local.settings.jsonã«è¨­å®š
+        //// ã‚µãƒ¼ãƒãƒ¼ã§ã‚‚å¿˜ã‚Œãšã«è¨­å®š
         //[Function("TestingValue")]
         //public HttpResponseData TestingValue([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         //{
-        //    _logger.LogInformation("ŠÂ‹«•Ï”‚ÌƒeƒXƒg");
+        //    _logger.LogInformation("ç’°å¢ƒå¤‰æ•°ã®ãƒ†ã‚¹ãƒˆ");
 
         //    var response = AddHeader(req);
 
-        //    var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUE‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢B";
+        //    var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUEã‚’è¨­å®šã—ã¦ãã ã•ã„ã€‚";
         //    response.WriteString(testingValue);
 
         //    return response;
         //}
 
-        //// DBXV‚·‚é‚ÆƒLƒbƒN‚³‚ê‚é‚ç‚µ‚¢BR‚éŠÖ”–¼‚ÍAzure‚ÌDB‚Ì“‡‚ÌAzureŠÖ”‚Ì’Ç‰Á‚Åİ’è
+        //// DBæ›´æ–°ã™ã‚‹ã¨ã‚­ãƒƒã‚¯ã•ã‚Œã‚‹ã‚‰ã—ã„ã€‚è¹´ã‚‹é–¢æ•°åã¯Azureã®DBã®çµ±åˆã®Azureé–¢æ•°ã®è¿½åŠ ã§è¨­å®š
         //[Function("BlizardContainerTrigger")]
         //public HttpResponseData BlizardContainerTrigger([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         //{
-        //    _logger.LogInformation("DBXV");
+        //    _logger.LogInformation("DBæ›´æ–°");
 
         //    var response = AddHeader(req);
-        //    response.WriteString("DBXV‚µ‚½‚ç‚µ‚¢‚æ");
+        //    response.WriteString("DBæ›´æ–°ã—ãŸã‚‰ã—ã„ã‚ˆ");
 
         //    return response;
         //}

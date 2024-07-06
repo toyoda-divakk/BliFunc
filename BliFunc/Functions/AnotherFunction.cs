@@ -28,17 +28,17 @@ namespace BliFunc.Functions
             return response;
         }
 
-        // ŠÂ‹«•Ï”‚ÌƒeƒXƒg
-        // local.settings.json‚Éİ’è
-        // ƒT[ƒo[‚Å‚à–Y‚ê‚¸‚Éİ’è
+        // ç’°å¢ƒå¤‰æ•°ã®ãƒ†ã‚¹ãƒˆ
+        // local.settings.jsonã«è¨­å®š
+        // ã‚µãƒ¼ãƒãƒ¼ã§ã‚‚å¿˜ã‚Œãšã«è¨­å®š
         [Function("TestingValue")]
         public HttpResponseData TestingValue([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         {
-            _logger.LogInformation("ŠÂ‹«•Ï”‚ÌƒeƒXƒg");
+            _logger.LogInformation("ç’°å¢ƒå¤‰æ•°ã®ãƒ†ã‚¹ãƒˆ");
 
             var response = AddHeader(req);
 
-            var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUE‚ğİ’è‚µ‚Ä‚­‚¾‚³‚¢B";
+            var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUEã‚’è¨­å®šã—ã¦ãã ã•ã„ã€‚";
             response.WriteString(testingValue);
 
             return response;
