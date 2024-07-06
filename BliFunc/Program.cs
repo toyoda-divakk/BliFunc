@@ -10,7 +10,9 @@ var host = new HostBuilder()
     {
         services.AddApplicationInsightsTelemetryWorkerService();
         services.ConfigureFunctionsApplicationInsights();
+        services.AddTransient<IFunctionService, FunctionService>();
         services.AddTransient<ISemanticService, SemanticService>();
+        services.AddTransient<IWorkRecordService, WorkRecordService>();
     })
     .Build();
 
