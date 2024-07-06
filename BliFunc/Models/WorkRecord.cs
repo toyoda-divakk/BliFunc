@@ -1,11 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BliFunc.Models
+﻿namespace BliFunc.Models
 {
     /// <summary>
     /// 日付と工数
@@ -43,9 +36,9 @@ namespace BliFunc.Models
         ///// </summary>
         //public string UserId { get; set; } = string.Empty;    // 1人で使うからいらない
 
-        public WorkRecord(DateTime date, double hours, string taskName)
+        public WorkRecord(string taskName, double hours, DateTime? date = null)
         {
-            Date = date;
+            Date = date == null ? DateTime.UtcNow : date.Value;
             Hours = hours;
             
             TaskName = int.TryParse(taskName, out _) ? $"issue番号:{taskName}" : taskName;    // ※特別仕様

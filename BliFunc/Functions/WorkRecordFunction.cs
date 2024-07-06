@@ -12,7 +12,7 @@ namespace BliFunc.Functions
         private readonly ILogger _logger = loggerFactory.CreateLogger<AnotherFunction>();
 
         [Function("RecordWork")]
-        public async Task<HttpResponseData> Add([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
+        public async Task<HttpResponseData> AddAsync([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
         {
             _logger.LogInformation("çHêîìoò^");
 
@@ -21,6 +21,24 @@ namespace BliFunc.Functions
             await workRecord.AddRecordAsync(work);
 
             return function.AddHeader(req, "çHêîìoò^Ç™äÆóπÇµÇ‹ÇµÇΩÅB");
+        }
+
+        [Function("TestDb")]
+        public async Task<HttpResponseData> TestDbAsync([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        {
+            _logger.LogInformation("DBÉeÉXÉg");
+
+            await workRecord.CreateDatabaseAndContainerAsync();
+
+            return function.AddHeader(req, "DBÇçÏÇËÇ‹ÇµÇΩÅB");
+        }
+
+        [Function("TestPost")]
+        public HttpResponseData TestPost([HttpTrigger(AuthorizationLevel.Function, "post")] HttpRequestData req, WorkRecord work)
+        {
+            _logger.LogInformation("POSTÉeÉXÉg");
+
+            return function.AddHeader(req, work.ToString());
         }
 
         //[Function("AddWorkRecord")]

@@ -25,7 +25,7 @@ public class SemanticService : ISemanticService
 {
     public async Task<string> TestAsync(IApiSetting settings) => await TestGenerativeAIAsync(settings, """Hello, world! と表示する C# のプログラムを書いてください。""");
 
-    private Kernel _kernel = null;
+    private Kernel _kernel = null!;
 
     public string Test() => "Hello, work!";
 
@@ -69,7 +69,7 @@ public class SemanticService : ISemanticService
             // プロンプトを作成
             var prompt = hello;
             var result = await kernel.InvokePromptAsync(prompt);
-            return result.GetValue<string>();
+            return result.GetValue<string>()!;
         }
         catch (Exception e)
         {
@@ -101,8 +101,8 @@ public class SemanticService : ISemanticService
         var response = await chatService.GetChatMessageContentAsync(history);
         if (response.Items.FirstOrDefault() is TextContent responseText)
         {
-            history.AddAssistantMessage(responseText.Text);
-            return responseText.Text;
+            history.AddAssistantMessage(responseText.Text!);
+            return responseText.Text!;
         }
         // 失敗した場合最後を削除する
         RemoveLastMessage(history);
