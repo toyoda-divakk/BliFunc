@@ -77,6 +77,39 @@ namespace BliFunc.Library.Services
         }
 
         /// <summary>
+        /// パーティションキーを条件に全てのItemを削除する
+        /// </summary>
+        /// <param name="partitionKey">パーティションキー</param>
+        /// <returns>正常ならnull、異常ならエラーメッセージ</returns>
+        public async Task<string> DeleteAllRecordsAsync(string partitionKey)
+        {
+            var records = await GetRecordsAsync(partitionKey);
+            if (records == null)
+            {
+                return "工数取得エラーが発生しました。";
+            }
+
+            using var client = new CosmosClient(EndpointUri, PrimaryKey);
+            var database = client.GetDatabase(DatabaseId);
+            var container = database.GetContainer(ContainerId);
+            try
+            {
+                foreach (var record in records)
+                {
+                    await container.DeleteItemAsync<WorkRecord>(record.Id, new PartitionKey(partitionKey));
+                }
+
+                return string.Empty;
+            }
+            catch (CosmosException ex)
+            {
+                var error = $"全てのItem削除エラー。Status code: {ex.StatusCode}, Message: {ex.Message}";
+                _logger.LogError(error);
+                return error;
+            }
+        }
+
+        /// <summary>
         /// Database, Containerの存在を確認し、なければ作成する
         /// </summary>
         /// <returns></returns>

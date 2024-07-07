@@ -33,4 +33,11 @@ public interface IWorkRecordService
     /// </summary>
     /// <returns></returns>
     Task CreateDatabaseAndContainerAsync();
+
+    /// <summary>
+    /// パーティションキーを条件に全てのItemを削除する
+    /// </summary>
+    /// <param name="partitionKey">パーティションキー</param>
+    /// <returns>正常ならnull、異常ならエラーメッセージ</returns>
+    Task<string> DeleteAllRecordsAsync(string partitionKey);
 }
