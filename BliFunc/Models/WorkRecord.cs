@@ -47,7 +47,7 @@ namespace BliFunc.Models
             Date = date == null ? DateTime.UtcNow : date.Value;
             Hours = hours;
             
-            TaskName = int.TryParse(taskName, out _) ? $"issue番号:{taskName}" : taskName;    // ※特別仕様
+            TaskName = int.TryParse(taskName, out _) ? $"改修作業[Gitlab Task No.{taskName}]" : taskName;    // ※特別仕様
 
             Id = Guid.NewGuid().ToString();
             PartitionKey = GetPartitionKey(Date);
@@ -59,10 +59,13 @@ namespace BliFunc.Models
             return date.ToString("yyyyMM");
         }
 
+        /// <summary>
+        /// 報告書用フォーマットに変換します。
+        /// </summary>
+        /// <returns></returns>
         public string ToSheetFormat()
         {
-            // "7/6\tissue番号:1234\t7.75"のように表示する
-            return $"{Date:M/d}\t{TaskName}\t{Hours}";
+            return $"{Date:M/d}\t{TaskName}\t{Hours}h";
         }
     }
 }
