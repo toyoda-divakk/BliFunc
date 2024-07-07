@@ -39,7 +39,7 @@ namespace BliFunc.Functions
             }
 
             var message = await workRecord.AddRecordAsync(work);    // 登録
-            return function.AddHeader(req, message == null ? "工数登録が完了しました。" : $"工数登録に失敗しました。:{message}");
+            return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? "工数登録が完了しました。" : $"工数登録に失敗しました。:{message}");
         }
 
         // 指定されたパーティションキーに対する工数の一覧を<List<WorkRecord>のJsonで返す
