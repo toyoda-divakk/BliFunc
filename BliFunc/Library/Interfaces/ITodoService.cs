@@ -10,23 +10,23 @@ using Microsoft.SemanticKernel.ChatCompletion;
 namespace BliFunc.Library.Interfaces;
 
 /// <summary>
-/// DBに工数を記録する処理
+/// DBにタスクを記録する処理
 /// </summary>
-public interface IWorkRecordService
+public interface ITodoService
 {
     /// <summary>
-    /// 工数を登録する
+    /// タスクを登録する
     /// </summary>
-    /// <param name="workRecord">工数データ</param>
+    /// <param name="task"></param>
     /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-    Task<string> AddRecordAsync(WorkRecord workRecord);
+    Task<string> AddAsync(TodoTask task);
 
     /// <summary>
-    /// パーティションキーを条件に工数を取得する
+    /// パーティションキーを条件にタスクを取得する
     /// </summary>
     /// <param name="partitionKey">パーティションキー</param>
     /// <returns>エラーならnull</returns>
-    Task<List<WorkRecord>?> GetRecordsAsync(string partitionKey);
+    Task<List<TodoTask>?> GetAsync(string partitionKey);
 
     /// <summary>
     /// Database, Containerの存在を確認し、なければ作成する
@@ -39,7 +39,7 @@ public interface IWorkRecordService
     /// </summary>
     /// <param name="partitionKey">パーティションキー</param>
     /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-    Task<string> DeleteAllRecordsAsync(string partitionKey);
+    Task<string> DeleteAllAsync(string partitionKey);
 
     /// <summary>
     /// IDを条件にItemを削除する
@@ -47,5 +47,5 @@ public interface IWorkRecordService
     /// <param name="id">ID</param>
     /// <param name="partitionKey">パーティションキー</param>
     /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-    Task<string> DeleteRecordAsync(string id, string partitionKey);
+    Task<string> DeleteAsync(string id, string partitionKey);
 }

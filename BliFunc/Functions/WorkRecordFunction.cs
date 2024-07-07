@@ -11,13 +11,13 @@ namespace BliFunc.Functions
 {
     public class WorkRecordFunction(ILoggerFactory loggerFactory, IFunctionService function, IWorkRecordService workRecord)
     {
-        private readonly ILogger _logger = loggerFactory.CreateLogger<AnotherFunction>();
+        private readonly ILogger _logger = loggerFactory.CreateLogger<WorkRecordFunction>();
 
         /// <summary>
         /// リクエストからパーティションキーを取得する
         /// </summary>
         /// <param name="req"></param>
-        /// <returns></returns>
+        /// <returns>partitionKeyのクエリパラメータの値</returns>
         private string GetPartitionKey(HttpRequestData req) => string.IsNullOrEmpty(req.Query["partitionKey"]) ? string.Empty : req.Query["partitionKey"]!;
 
         /// <summary>
@@ -42,7 +42,12 @@ namespace BliFunc.Functions
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? "工数登録が完了しました。" : $"工数登録に失敗しました。:{message}");
         }
 
-        // 指定されたパーティションキーに対する工数の一覧を<List<WorkRecord>のJsonで返す
+        /// <summary>
+        /// 指定されたパーティションキーに対する工数の一覧を取得する
+        /// クエリパラメータとしてpartitionKeyが必要
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>工数の一覧を<List<WorkRecord>のJsonで返す</returns>
         [Function("GetWorkRecords")]
         public async Task<HttpResponseData> GetAsync([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
         {
@@ -68,7 +73,12 @@ namespace BliFunc.Functions
             return response;
         }
 
-        // 指定されたパーティションキーに対するItemを全て削除する
+        /// <summary>
+        /// 指定されたパーティションキーに対するItemを全て削除する
+        /// クエリパラメータとしてpartitionKeyが必要
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>結果</returns>
         [Function("DeleteWorkRecords")]
         public async Task<HttpResponseData> DeleteAsync([HttpTrigger(AuthorizationLevel.Function, "delete")] HttpRequestData req)
         {
@@ -94,6 +104,35 @@ namespace BliFunc.Functions
             }
 
             return function.AddHeader(req, "工数の削除が完了しました。");
+        }
+
+        /// <summary>
+        /// 指定されたIDに対するItemを削除する
+        /// クエリパラメータとしてidとpartitionKeyが必要
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>結果</returns>
+        [Function("DeleteWorkRecord")]
+        public async Task<HttpResponseData> DeleteByIdAsync([HttpTrigger(AuthorizationLevel.Function, "delete")] HttpRequestData req)
+        {
+            _logger.LogInformation("工数削除");
+            await workRecord.CreateDatabaseAndContainerAsync(); // 存在確認
+
+            // 値確認
+            string partitionKey = GetPartitionKey(req);
+            if (string.IsNullOrEmpty(partitionKey))
+            {
+                return function.AddHeader(req, "パーティションキーが指定されていません。");
+            }
+            string id = req.Query["id"] ?? string.Empty;
+            if (string.IsNullOrEmpty(id))
+            {
+                return function.AddHeader(req, "IDが指定されていません。");
+            }
+
+            // データ削除
+            var message = await workRecord.DeleteRecordAsync(id, partitionKey);
+            return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? "工数の削除が完了しました。" : $"工数の削除に失敗しました。:{message}");
         }
 
 

@@ -13,6 +13,7 @@ var host = new HostBuilder()
         services.AddTransient<IFunctionService, FunctionService>();
         services.AddTransient<ISemanticService, SemanticService>();
         services.AddTransient<IWorkRecordService, WorkRecordService>();
+        services.AddTransient<ITodoService, TodoService>();
     })
     .Build();
 

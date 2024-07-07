@@ -7,22 +7,16 @@ using Microsoft.Extensions.Logging;
 
 namespace BliFunc.Functions
 {
-    public class AnotherFunction(ILoggerFactory loggerFactory, ISemanticService semantic)
+    public class AnotherFunction(ILoggerFactory loggerFactory, ISemanticService semantic, IFunctionService function)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<AnotherFunction>();
-        private HttpResponseData AddHeader(HttpRequestData req)
-        {
-            var response = req.CreateResponse(HttpStatusCode.OK);
-            response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
-            return response;
-        }
 
         [Function("DiTest")]
         public HttpResponseData DiTest([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         {
             _logger.LogInformation("C# HTTP trigger function processed a request.");
 
-            var response = AddHeader(req);
+            var response = function.AddHeader(req);
             response.WriteString(semantic.Test());
 
             return response;
@@ -36,7 +30,7 @@ namespace BliFunc.Functions
         {
             _logger.LogInformation("環境変数のテスト");
 
-            var response = AddHeader(req);
+            var response = function.AddHeader(req);
 
             var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUEを設定してください。";
             response.WriteString(testingValue);

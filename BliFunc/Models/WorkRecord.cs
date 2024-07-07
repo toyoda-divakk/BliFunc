@@ -2,7 +2,6 @@
 
 namespace BliFunc.Models
 {
-    // idとpartitionKeyはCosmosDBの仕様に合わせなければならない。
 
     /// <summary>
     /// 日付と工数
