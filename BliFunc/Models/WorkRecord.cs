@@ -58,5 +58,11 @@ namespace BliFunc.Models
         {
             return date.ToString("yyyyMM");
         }
+
+        public string ToSheetFormat()
+        {
+            // "7/6\tissue番号:1234\t7.75"のように表示する
+            return $"{Date:M/d}\t{TaskName}\t{Hours}";
+        }
     }
 }
