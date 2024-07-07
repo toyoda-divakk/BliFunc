@@ -28,6 +28,12 @@ namespace BliFunc.Models
         public DateTime Date { get; set; }
 
         /// <summary>
+        /// 期間を示す場合のみ使用。
+        /// 作業が終わった日付を記録します。
+        /// </summary>
+        public DateTime? EndDate { get; set; }
+
+        /// <summary>
         /// 作業に費やした時間（工数）を小数点で記録します。
         /// </summary>
         public double Hours { get; set; }
@@ -42,12 +48,13 @@ namespace BliFunc.Models
         ///// </summary>
         //public string UserId { get; set; } = string.Empty;    // 1人で使うからいらない
 
-        public WorkRecord(string taskName, double hours, DateTime? date = null)
+        public WorkRecord(string taskName, double hours, DateTime? date = null, DateTime? endDate = null)
         {
             Date = date == null ? DateTime.UtcNow : date.Value;
+            EndDate = endDate;
             Hours = hours;
-            
-            TaskName = int.TryParse(taskName, out _) ? $"改修作業[Gitlab Task No.{taskName}]" : taskName;    // ※特別仕様
+
+            TaskName = int.TryParse(taskName, out _) ? $"issue番号:{taskName}" : taskName;    // ※特別仕様
 
             Id = Guid.NewGuid().ToString();
             PartitionKey = GetPartitionKey(Date);
@@ -65,7 +72,8 @@ namespace BliFunc.Models
         /// <returns></returns>
         public string ToSheetFormat()
         {
-            return $"{Date:M/d}\t{TaskName}\t{Hours}h";
+            // "7/6\tissue番号:1234\t7.75"のように表示する
+            return EndDate == null ? $"{Date:M/d}\t{TaskName}\t{Hours}" : $"{Date:M/d}-{EndDate.Value.Day:d}\t{TaskName}\t{Hours}";
         }
     }
 }
