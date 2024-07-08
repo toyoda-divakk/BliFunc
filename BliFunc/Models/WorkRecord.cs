@@ -53,7 +53,7 @@ namespace BliFunc.Models
             EndDate = endDate;
             Hours = hours;
 
-            TaskName = int.TryParse(taskName, out _) ? $"issue番号:{taskName}" : taskName;    // ※特別仕様
+            TaskName = int.TryParse(taskName, out _) ? $"改修作業[Gitlab Task No.{taskName}]" : taskName;    // ※特別仕様
 
             Id = Guid.NewGuid().ToString();
             PartitionKey = GetPartitionKey(Date);
