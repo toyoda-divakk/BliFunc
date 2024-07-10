@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BliFunc.Models;
-using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.SemanticKernel.ChatCompletion;
+﻿using BliFunc.Models;
 
 namespace BliFunc.Library.Interfaces;
 
@@ -15,14 +8,14 @@ namespace BliFunc.Library.Interfaces;
 public interface ITodoService
 {
     /// <summary>
-    /// タスクを登録する
+    /// Itemを登録する
     /// </summary>
-    /// <param name="task"></param>
+    /// <param name="item"></param>
     /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-    Task<string> AddAsync(TodoTask task);
+    Task<string> AddAsync(TodoTask item);
 
     /// <summary>
-    /// パーティションキーを条件にタスクを取得する
+    /// パーティションキーを条件にItemを取得する
     /// </summary>
     /// <param name="partitionKey">パーティションキー</param>
     /// <returns>エラーならnull</returns>

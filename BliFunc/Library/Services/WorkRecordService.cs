@@ -13,17 +13,12 @@ namespace BliFunc.Library.Services
     public class WorkRecordService(ILoggerFactory loggerFactory) : IWorkRecordService
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<WorkRecordService>();
-        private static readonly string? EndpointUri = Environment.GetEnvironmentVariable("CosmosDBEndpointUri");    // 毎回読み込めばいい？
+        private static readonly string? EndpointUri = Environment.GetEnvironmentVariable("CosmosDBEndpointUri");
         private static readonly string? PrimaryKey = Environment.GetEnvironmentVariable("CosmosDBPrimaryKey");
         private static readonly string? DatabaseId = Environment.GetEnvironmentVariable("CosmosDBWorkDatabaseId");
         private static readonly string? ContainerId = Environment.GetEnvironmentVariable("CosmosDBWorkContainerId");
 
-        /// <summary>
-        /// 工数を登録する
-        /// </summary>
-        /// <param name="workRecord">工数データ</param>
-        /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-        public async Task<string> AddRecordAsync(WorkRecord workRecord)
+        public async Task<string> AddAsync(WorkRecord workRecord)
         {
             _logger.LogInformation("工数登録");
 
@@ -44,12 +39,7 @@ namespace BliFunc.Library.Services
             }
         }
 
-        /// <summary>
-        /// パーティションキーを条件に工数を取得する
-        /// </summary>
-        /// <param name="partitionKey">パーティションキー</param>
-        /// <returns>エラーならnull</returns>
-        public async Task<List<WorkRecord>?> GetRecordsAsync(string partitionKey)
+        public async Task<List<WorkRecord>?> GetAsync(string partitionKey)
         {
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = client.GetDatabase(DatabaseId);
@@ -76,14 +66,9 @@ namespace BliFunc.Library.Services
             }
         }
 
-        /// <summary>
-        /// パーティションキーを条件に全てのItemを削除する
-        /// </summary>
-        /// <param name="partitionKey">パーティションキー</param>
-        /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-        public async Task<string> DeleteAllRecordsAsync(string partitionKey)
+        public async Task<string> DeleteAllAsync(string partitionKey)
         {
-            var records = await GetRecordsAsync(partitionKey);
+            var records = await GetAsync(partitionKey);
             if (records == null)
             {
                 return "工数取得エラーが発生しました。";
@@ -109,13 +94,7 @@ namespace BliFunc.Library.Services
             }
         }
 
-        /// <summary>
-        /// IDを条件にItemを削除する
-        /// </summary>
-        /// <param name="id">ID</param>
-        /// <param name="partitionKey">パーティションキー</param>
-        /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
-        public async Task<string> DeleteRecordAsync(string id, string partitionKey)
+        public async Task<string> DeleteAsync(string id, string partitionKey)
         {
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = client.GetDatabase(DatabaseId);
@@ -133,11 +112,6 @@ namespace BliFunc.Library.Services
             }
         }
 
-
-        /// <summary>
-        /// Database, Containerの存在を確認し、なければ作成する
-        /// </summary>
-        /// <returns></returns>
         public async Task CreateDatabaseAndContainerAsync()
         {
             if (string.IsNullOrEmpty(EndpointUri) || string.IsNullOrEmpty(PrimaryKey) || string.IsNullOrEmpty(DatabaseId) || string.IsNullOrEmpty(ContainerId))
