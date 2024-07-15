@@ -24,11 +24,16 @@ namespace BliFunc.Models
         /// <summary>
         /// タスクの内容
         /// </summary>
-        public string Content { get; set; } = string.Empty;
+        public string Description { get; set; } = string.Empty;
 
-        public TodoTask(string category, string content)
+        /// <summary>
+        /// Todoタスク
+        /// </summary>
+        /// <param name="category">分類（半角英字で書くこと）</param>
+        /// <param name="description">内容</param>
+        public TodoTask(string category, string description)
         {
-            Content = content;
+            Description = description;
 
             Id = Guid.NewGuid().ToString();
             PartitionKey = category;
