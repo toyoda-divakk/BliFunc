@@ -126,8 +126,7 @@ namespace BliFunc.Library.Services
             var container = await database.Database.CreateContainerIfNotExistsAsync(ContainerId, "/partitionKey");
         }
 
-        // 存在するパーティションキーを取得する
-        public static async Task<List<string>> GetPartitionKeysAsync()
+        public async Task<List<string>> GetPartitionKeysAsync()
         {
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = client.GetDatabase(DatabaseId);

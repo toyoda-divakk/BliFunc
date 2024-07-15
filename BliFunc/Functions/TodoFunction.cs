@@ -143,7 +143,7 @@ namespace BliFunc.Functions
         /// 登録されているタスクのカテゴリ一覧を取得する
         /// </summary>
         /// <returns>カテゴリ一覧</returns>
-        [Function("GetCategories")]
+        [Function("GetTaskCategories")]
         private async Task<HttpResponseData> GetCategoriesAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
         {
             var result = await todo.GetPartitionKeysAsync();
