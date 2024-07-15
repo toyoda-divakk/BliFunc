@@ -72,7 +72,7 @@ namespace BliFunc.Models
         public string ToSheetFormat()
         {
             // "7/6\tissue番号:1234\t7.75"のように表示する
-            return EndDate == null ? $"{Date:M/d}\t{TaskName}\t{Hours}" : $"{Date:M/d}-{EndDate.Value.Day:d}\t{TaskName}\t{Hours}";
+            return EndDate == null || Date.Day == EndDate.Value.Day ? $"{Date:M/d}\t{TaskName}\t{Hours}" : $"{Date:M/d}-{EndDate.Value.Day:d}\t{TaskName}\t{Hours}";
         }
     }
 }

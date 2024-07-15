@@ -1,4 +1,3 @@
-using System.Net;
 using BliFunc.Library;
 using BliFunc.Library.Interfaces;
 using BliFunc.Models;
@@ -23,7 +22,7 @@ namespace BliFunc.Functions
         private static string GetPartitionKey(HttpRequestData req) => string.IsNullOrEmpty(req.Query[Constants.PartitionKey]) ? string.Empty : req.Query[Constants.PartitionKey]!;
 
         /// <summary>
-        /// 工数を登録する
+        /// データを登録する
         /// </summary>
         /// <param name="req">WorkRecord形式のJsonをBodyに持っていること</param>
         /// <returns>結果</returns>
@@ -34,22 +33,22 @@ namespace BliFunc.Functions
             await workRecord.CreateDatabaseAndContainerAsync(); // 存在確認
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            var work = JsonConvert.DeserializeObject<WorkRecord>(requestBody);
-            if (work == null)
+            var record = JsonConvert.DeserializeObject<WorkRecord>(requestBody);
+            if (record == null)
             {
                 return function.AddHeader(req, Constants.DeserializeFailed);
             }
 
-            var message = await workRecord.AddAsync(work);    // 登録
+            var message = await workRecord.AddAsync(record);    // 登録
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.AddSucceed,  _word) : string.Format(Constants.AddSucceed, _word, message));
         }
 
         /// <summary>
-        /// 指定されたパーティションキーに対する工数の一覧を取得する
+        /// 指定されたパーティションキーに対するデータの一覧を取得する
         /// クエリパラメータとしてpartitionKeyが必要
         /// </summary>
         /// <param name="req"></param>
-        /// <returns>工数の一覧を<List<WorkRecord>のJsonで返す</returns>
+        /// <returns>データの一覧を<List<WorkRecord>のJsonで返す</returns>
         [Function("GetWorkRecords")]
         public async Task<HttpResponseData> GetAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
         {
