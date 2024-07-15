@@ -4,13 +4,14 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BliFunc.Library.Services
 {
-    public class TodoService(ILoggerFactory loggerFactory) : ITodoService       // TODO:書き換えただけで何もテストしてない
+    public class TodoService(ILoggerFactory loggerFactory) : ITodoService
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<TodoService>();
         private static readonly string? EndpointUri = Environment.GetEnvironmentVariable("CosmosDBEndpointUri");
@@ -123,6 +124,30 @@ namespace BliFunc.Library.Services
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = await client.CreateDatabaseIfNotExistsAsync(DatabaseId);
             var container = await database.Database.CreateContainerIfNotExistsAsync(ContainerId, "/partitionKey");
+        }
+
+        // 存在するパーティションキーを取得する
+        public static async Task<List<string>> GetPartitionKeysAsync()
+        {
+            using var client = new CosmosClient(EndpointUri, PrimaryKey);
+            var database = client.GetDatabase(DatabaseId);
+            var container = database.GetContainer(ContainerId);
+
+            List<string> partitionKeys = [];
+
+            QueryDefinition queryDefinition = new("SELECT DISTINCT c.partitionKey FROM c");
+            FeedIterator<dynamic> queryResultSetIterator = container.GetItemQueryIterator<dynamic>(queryDefinition);
+
+            while (queryResultSetIterator.HasMoreResults)
+            {
+                var currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                foreach (var item in currentResultSet)
+                {
+                    partitionKeys.Add(item.partitionKey.ToString());
+                }
+            }
+
+            return partitionKeys;
         }
     }
 }

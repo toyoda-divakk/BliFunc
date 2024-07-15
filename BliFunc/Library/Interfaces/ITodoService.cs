@@ -41,4 +41,10 @@ public interface ITodoService
     /// <param name="partitionKey">パーティションキー</param>
     /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
     Task<string> DeleteAsync(string id, string partitionKey);
+
+    /// <summary>
+    /// 存在するパーティションキーを取得する
+    /// </summary>
+    /// <returns></returns>
+    Task<List<string>> GetPartitionKeysAsync();
 }

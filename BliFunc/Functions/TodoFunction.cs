@@ -2,6 +2,7 @@ using System.Net;
 using BliFunc.Library;
 using BliFunc.Library.Interfaces;
 using BliFunc.Models;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -138,6 +139,18 @@ namespace BliFunc.Functions
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.DeleteSucceed, _word) : string.Format(Constants.DeleteFailed, _word, message));
         }
 
+        /// <summary>
+        /// 登録されているタスクのカテゴリ一覧を取得する
+        /// </summary>
+        /// <returns>カテゴリ一覧</returns>
+        [Function("GetCategories")]
+        private async Task<HttpResponseData> GetCategoriesAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
+        {
+            var result = await todo.GetPartitionKeysAsync();
+            var response = function.AddHeader(req);
+            response.WriteString(JsonConvert.SerializeObject(result));
+            return response;
+        }
 
     }
 }
