@@ -26,7 +26,7 @@ namespace BliFunc.Models
         /// </summary>
         public string Content { get; set; } = string.Empty;
 
-        public TodoTask(string content, string category)
+        public TodoTask(string category, string content)
         {
             Content = content;
 
