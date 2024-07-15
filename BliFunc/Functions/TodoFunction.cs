@@ -9,30 +9,30 @@ using Newtonsoft.Json;
 
 namespace BliFunc.Functions
 {
-    // ‚â‚è‚½‚¢‚±‚Æ‚ğCosmosDB‚É•ú‚è‚ñ‚Å‚¢‚±‚¤
-    // ì‚è•û‚ÍWorkRecord‚Æ“¯‚¶
+    // ã‚„ã‚ŠãŸã„ã“ã¨ã‚’CosmosDBã«æ”¾ã‚Šè¾¼ã‚“ã§ã„ã“ã†
+    // ä½œã‚Šæ–¹ã¯WorkRecordã¨åŒã˜
     public class TodoFunction(ILoggerFactory loggerFactory, IFunctionService function, ITodoService todo)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<TodoFunction>();
-        private readonly string _word = "ƒ^ƒXƒN";
+        private readonly string _word = "ã‚¿ã‚¹ã‚¯";
 
         /// <summary>
-        /// ƒŠƒNƒGƒXƒg‚©‚çƒp[ƒeƒBƒVƒ‡ƒ“ƒL[‚ğæ“¾‚·‚é
+        /// ãƒªã‚¯ã‚¨ã‚¹ãƒˆã‹ã‚‰ãƒ‘ãƒ¼ãƒ†ã‚£ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã‚’å–å¾—ã™ã‚‹
         /// </summary>
         /// <param name="req"></param>
-        /// <returns>partitionKey‚ÌƒNƒGƒŠƒpƒ‰ƒ[ƒ^‚Ì’l</returns>
+        /// <returns>partitionKeyã®ã‚¯ã‚¨ãƒªãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã®å€¤</returns>
         private static string GetPartitionKey(HttpRequestData req) => string.IsNullOrEmpty(req.Query[Constants.PartitionKey]) ? string.Empty : req.Query[Constants.PartitionKey]!;
 
         /// <summary>
-        /// ƒf[ƒ^‚ğ“o˜^‚·‚é
+        /// ãƒ‡ãƒ¼ã‚¿ã‚’ç™»éŒ²ã™ã‚‹
         /// </summary>
-        /// <param name="req">TodoTaskŒ`®‚ÌJson‚ğBody‚É‚Á‚Ä‚¢‚é‚±‚Æ</param>
-        /// <returns>Œ‹‰Ê</returns>
+        /// <param name="req">TodoTaskå½¢å¼ã®Jsonã‚’Bodyã«æŒã£ã¦ã„ã‚‹ã“ã¨</param>
+        /// <returns>çµæœ</returns>
         [Function("RecordTask")]
         public async Task<HttpResponseData> AddAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Post)] HttpRequestData req)
         {
             _logger.LogInformation(string.Format(Constants.LogAdd, _word));
-            await todo.CreateDatabaseAndContainerAsync(); // ‘¶İŠm”F
+            await todo.CreateDatabaseAndContainerAsync(); // å­˜åœ¨ç¢ºèª
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             var record = JsonConvert.DeserializeObject<TodoTask>(requestBody);
@@ -41,30 +41,30 @@ namespace BliFunc.Functions
                 return function.AddHeader(req, Constants.DeserializeFailed);
             }
 
-            var message = await todo.AddAsync(record);    // “o˜^
+            var message = await todo.AddAsync(record);    // ç™»éŒ²
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.AddSucceed, _word) : string.Format(Constants.AddSucceed, _word, message));
         }
 
         /// <summary>
-        /// w’è‚³‚ê‚½ƒp[ƒeƒBƒVƒ‡ƒ“ƒL[‚É‘Î‚·‚éƒf[ƒ^‚Ìˆê——‚ğæ“¾‚·‚é
-        /// ƒNƒGƒŠƒpƒ‰ƒ[ƒ^‚Æ‚µ‚ÄpartitionKey‚ª•K—v
+        /// æŒ‡å®šã•ã‚ŒãŸãƒ‘ãƒ¼ãƒ†ã‚£ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã«å¯¾ã™ã‚‹ãƒ‡ãƒ¼ã‚¿ã®ä¸€è¦§ã‚’å–å¾—ã™ã‚‹
+        /// ã‚¯ã‚¨ãƒªãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¨ã—ã¦partitionKeyãŒå¿…è¦
         /// </summary>
         /// <param name="req"></param>
-        /// <returns>ƒf[ƒ^‚Ìˆê——‚ğ<List<todo>‚ÌJson‚Å•Ô‚·</returns>
+        /// <returns>ãƒ‡ãƒ¼ã‚¿ã®ä¸€è¦§ã‚’<List<todo>ã®Jsonã§è¿”ã™</returns>
         [Function("GetTasks")]
         public async Task<HttpResponseData> GetAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
         {
             _logger.LogInformation(string.Format(Constants.LogGet, _word));
-            await todo.CreateDatabaseAndContainerAsync(); // ‘¶İŠm”F
+            await todo.CreateDatabaseAndContainerAsync(); // å­˜åœ¨ç¢ºèª
 
-            // ’lŠm”F
+            // å€¤ç¢ºèª
             var partitionKey = GetPartitionKey(req);
             if (string.IsNullOrEmpty(partitionKey))
             {
                 return function.AddHeader(req, Constants.PartitionKeyFailed);
             }
 
-            // ƒf[ƒ^æ“¾
+            // ãƒ‡ãƒ¼ã‚¿å–å¾—
             var records = await todo.GetAsync(partitionKey);
             if (records == null)
             {
@@ -77,25 +77,25 @@ namespace BliFunc.Functions
         }
 
         /// <summary>
-        /// w’è‚³‚ê‚½ƒp[ƒeƒBƒVƒ‡ƒ“ƒL[‚É‘Î‚·‚éItem‚ğ‘S‚Äíœ‚·‚é
-        /// ƒNƒGƒŠƒpƒ‰ƒ[ƒ^‚Æ‚µ‚ÄpartitionKey‚ª•K—v
+        /// æŒ‡å®šã•ã‚ŒãŸãƒ‘ãƒ¼ãƒ†ã‚£ã‚·ãƒ§ãƒ³ã‚­ãƒ¼ã«å¯¾ã™ã‚‹Itemã‚’å…¨ã¦å‰Šé™¤ã™ã‚‹
+        /// ã‚¯ã‚¨ãƒªãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¨ã—ã¦partitionKeyãŒå¿…è¦
         /// </summary>
         /// <param name="req"></param>
-        /// <returns>Œ‹‰Ê</returns>
+        /// <returns>çµæœ</returns>
         [Function("DeleteTasks")]
         public async Task<HttpResponseData> DeleteAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Delete)] HttpRequestData req)
         {
             _logger.LogInformation(string.Format(Constants.LogDeleteAll, _word));
-            await todo.CreateDatabaseAndContainerAsync(); // ‘¶İŠm”F
+            await todo.CreateDatabaseAndContainerAsync(); // å­˜åœ¨ç¢ºèª
 
-            // ’lŠm”F
+            // å€¤ç¢ºèª
             string partitionKey = GetPartitionKey(req);
             if (string.IsNullOrEmpty(partitionKey))
             {
                 return function.AddHeader(req, Constants.PartitionKeyFailed);
             }
 
-            // ƒf[ƒ^æ“¾‚Æíœ
+            // ãƒ‡ãƒ¼ã‚¿å–å¾—ã¨å‰Šé™¤
             var records = await todo.GetAsync(partitionKey);
             if (records == null)
             {
@@ -110,18 +110,18 @@ namespace BliFunc.Functions
         }
 
         /// <summary>
-        /// w’è‚³‚ê‚½ID‚É‘Î‚·‚éItem‚ğíœ‚·‚é
-        /// ƒNƒGƒŠƒpƒ‰ƒ[ƒ^‚Æ‚µ‚Äid‚ÆpartitionKey‚ª•K—v
+        /// æŒ‡å®šã•ã‚ŒãŸIDã«å¯¾ã™ã‚‹Itemã‚’å‰Šé™¤ã™ã‚‹
+        /// ã‚¯ã‚¨ãƒªãƒ‘ãƒ©ãƒ¡ãƒ¼ã‚¿ã¨ã—ã¦idã¨partitionKeyãŒå¿…è¦
         /// </summary>
         /// <param name="req"></param>
-        /// <returns>Œ‹‰Ê</returns>
+        /// <returns>çµæœ</returns>
         [Function("DeleteTask")]
         public async Task<HttpResponseData> DeleteByIdAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Delete)] HttpRequestData req)
         {
             _logger.LogInformation(string.Format(Constants.LogDelete, _word));
-            await todo.CreateDatabaseAndContainerAsync(); // ‘¶İŠm”F
+            await todo.CreateDatabaseAndContainerAsync(); // å­˜åœ¨ç¢ºèª
 
-            // ’lŠm”F
+            // å€¤ç¢ºèª
             string partitionKey = GetPartitionKey(req);
             if (string.IsNullOrEmpty(partitionKey))
             {
@@ -133,7 +133,7 @@ namespace BliFunc.Functions
                 return function.AddHeader(req, Constants.Id);
             }
 
-            // ƒf[ƒ^íœ
+            // ãƒ‡ãƒ¼ã‚¿å‰Šé™¤
             var message = await todo.DeleteAsync(id, partitionKey);
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.DeleteSucceed, _word) : string.Format(Constants.DeleteFailed, _word, message));
         }
