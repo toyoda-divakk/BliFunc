@@ -128,25 +128,36 @@ namespace BliFunc.Library.Services
 
         public async Task<List<string>> GetPartitionKeysAsync()
         {
+            _logger.LogInformation("GetPartitionKeys");
             using var client = new CosmosClient(EndpointUri, PrimaryKey);
             var database = client.GetDatabase(DatabaseId);
             var container = database.GetContainer(ContainerId);
 
             List<string> partitionKeys = [];
-
-            QueryDefinition queryDefinition = new("SELECT DISTINCT c.partitionKey FROM c");
-            FeedIterator<dynamic> queryResultSetIterator = container.GetItemQueryIterator<dynamic>(queryDefinition);
-
-            while (queryResultSetIterator.HasMoreResults)
+            try
             {
-                var currentResultSet = await queryResultSetIterator.ReadNextAsync();
-                foreach (var item in currentResultSet)
+                QueryDefinition queryDefinition = new("SELECT DISTINCT c.partitionKey FROM c");
+                FeedIterator<dynamic> queryResultSetIterator = container.GetItemQueryIterator<dynamic>(queryDefinition);
+
+                while (queryResultSetIterator.HasMoreResults)
                 {
-                    partitionKeys.Add(item.partitionKey.ToString());
+                    var currentResultSet = await queryResultSetIterator.ReadNextAsync();
+                    foreach (var item in currentResultSet)
+                    {
+                        partitionKeys.Add(item.partitionKey.ToString());
+                    }
                 }
+
+                return partitionKeys;
+            }
+            catch (Exception ex)
+            {
+                var error = $"Item取得エラー。Message: {ex.Message}";
+                _logger.LogError(error);
+                partitionKeys.Add(ex.Message);
+                return partitionKeys;
             }
 
-            return partitionKeys;
         }
     }
 }

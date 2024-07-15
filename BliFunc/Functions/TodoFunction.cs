@@ -144,13 +144,12 @@ namespace BliFunc.Functions
         /// </summary>
         /// <returns>カテゴリ一覧</returns>
         [Function("GetTaskCategories")]
-        private async Task<HttpResponseData> GetCategoriesAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
+        public async Task<HttpResponseData> GetCategoriesAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
         {
             var result = await todo.GetPartitionKeysAsync();
             var response = function.AddHeader(req);
             response.WriteString(JsonConvert.SerializeObject(result));
             return response;
         }
-
     }
 }
