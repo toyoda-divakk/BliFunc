@@ -276,7 +276,7 @@ public class SemanticService : ISemanticService
 // {{ UtilsExample.LocalNow }}
 
 //[Description("四則演算プラグイン")]    // これを書くと、エージェント機能で利用されるようになるので書いた方が良い。System.ComponentModelをusingする
-public class UtilsExample(TimeProvider timeProvider) // これはプライマリーコンストラクタというC#12の機能
+public class UtilsExample(TimeProvider timeProvider)
 {
     // 現在時間を返す
     [KernelFunction]

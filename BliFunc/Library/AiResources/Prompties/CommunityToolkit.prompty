@@ -1,0 +1,198 @@
+---
+name: ''
+description: ''
+authors: []
+tags: []
+version: ''
+base: ''
+model:
+  api: chat
+  configuration:
+    type: azure_openai
+    azure_deployment: assistant4o
+  parameters:
+    temperature: 0.7
+    top_p: 0.95
+    stop: []
+    frequency_penalty: 0
+    presence_penalty: 0
+    max_tokens: 800
+  response: {}
+sample: {}
+input: {}
+output: {}
+template:
+  type: jinja2
+  parser: prompty
+---
+system:
+CommunityToolkit8に対応していないC#またはXamlのソースコードを入力するので、これをCommunityToolkit8に対応した記述に変換してください。結果はソースコードだけ出力してください。
+
+user:
+internal class Vm : ObservableObject
+{
+    private string _name;
+    public string Name 
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+
+    private IRelayCommand<string> greetCommand;
+
+    public IRelayCommand<string> GreetCommand => greetCommand ??= new RelayCommand<string>(Greet);
+
+    private void Greet(string user)
+    {
+        Debug.WriteLine($"Hello {user}!");
+    }
+}
+assistant:
+```
+internal partial class Vm : ObservableObject
+{
+    [ObservableProperty]
+    private string name;
+
+    [RelayCommand]
+    private void Greet(string user) {
+        Debug.WriteLine($"Hello {user}!");
+    }
+}
+```
+
+user:
+internal class MyUserControlViewModel : ObservableObject
+{
+    private string _testButtonText;
+    public string TestButtonText
+    {
+        get => _testButtonText;
+        set => SetProperty(ref _testButtonText, value);
+    }
+
+    private IRelayCommand<string> testButtonCommand;
+
+    public IRelayCommand<string> TestButtonCommand => testButtonCommand ??= new RelayCommand<string>(TestButton);
+
+    public MyUserControlViewModel()
+    {
+        TestButtonText = "Click Me";
+    }
+
+    private void TestButton()
+    {
+        TestButtonText = "Test Button Clicked";
+    }
+}
+assistant:
+```
+internal partial class MyUserControlViewModel : ObservableObject
+{
+    [ObservableProperty]
+    private string testButtonText;
+
+
+    public MyUserControlViewModel()
+    {
+        TestButtonText = "Click Me";
+    }
+
+    [RelayCommand]
+    private void TestButton()
+    {
+        TestButtonText = "Test Button Clicked";
+    }
+}
+```
+
+user:
+    private string _name;
+    public string Name 
+    {
+        get => _name;
+        set => SetProperty(ref _name, value);
+    }
+    
+    private string _address;
+    public string Address 
+    {
+        get => _address;
+        set => SetProperty(ref _address, value);
+    }
+assistant:
+```
+    [ObservableProperty]  
+    private string name;  
+  
+    [ObservableProperty]  
+    private string address;  
+```
+
+user:
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                Console.WriteLine($"Nameプロパティが {value} に変更されようとしてます");
+                _name = value;
+                Console.WriteLine($"Nameプロパティが {value} に変更されました");
+            }
+        }
+assistant:
+```
+        [ObservableProperty]
+        public string name;
+
+        partial void OnNameChanging(string value)
+        {
+            Console.WriteLine($"Nameプロパティが {value} に変更されようとしてます");
+        }
+
+         partial void OnNameChanged(string value)
+        {
+            Console.WriteLine($"Nameプロパティが {value} に変更されました");
+        }
+```
+
+user:
+        private string _name;
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                Console.WriteLine($"Nameプロパティが{value}に変更されようとしてます");
+                Console.WriteLine($"{_name}が{value}に変更されようとしてます");
+                var oldValue = _name;
+                _name = value;
+                Console.WriteLine($"Nameプロパティが{value}に変更されました");
+                Console.WriteLine($"{oldValue}が{value}に変更されました");
+            }
+        }
+assistant:
+```
+        [ObservableProperty]
+        public string name;
+
+        partial void OnNameChanging(string value)
+        {
+            Console.WriteLine($"Nameプロパティが{value}に変更されようとしてます");
+        }
+        partial void OnNameChanging(string? oldValue, string newValue)
+        {
+            Console.WriteLine($"{oldValue}が{newValue}に変更されようとしてます");
+        }
+
+        partial void OnNameChanged(string value)
+        {
+            Console.WriteLine($"Nameプロパティが{value}に変更されました");
+        }
+
+        partial void OnNameChanged(string? oldValue, string newValue)
+        {
+            Console.WriteLine($"{oldValue}が{newValue}に変更されました");
+        }
+```
