@@ -47,4 +47,13 @@ public interface ITodoService
     /// </summary>
     /// <returns></returns>
     Task<List<string>> GetPartitionKeysAsync();
+
+
+    /// <summary>
+    /// Indexを条件にItemを削除する
+    /// </summary>
+    /// <param name="index">Index(0から)</param>
+    /// <param name="partitionKey">パーティションキー</param>
+    /// <returns>正常ならempty、異常ならエラーメッセージ</returns>
+    Task<string> DeleteByIndexAsync(int index, string partitionKey);
 }

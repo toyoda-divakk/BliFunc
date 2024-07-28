@@ -140,6 +140,35 @@ namespace BliFunc.Functions
         }
 
         /// <summary>
+        /// 指定されたIndexに対するItemを削除する
+        /// クエリパラメータとしてindexとpartitionKeyが必要
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns>結果</returns>
+        [Function("DeleteByIndex")]
+        public async Task<HttpResponseData> DeleteByIndexAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Delete)] HttpRequestData req)
+        {
+            _logger.LogInformation(string.Format(Constants.LogDelete, _word));
+            await todo.CreateDatabaseAndContainerAsync(); // 存在確認
+
+            // 値確認
+            string partitionKey = GetPartitionKey(req);
+            if (string.IsNullOrEmpty(partitionKey))
+            {
+                return function.AddHeader(req, Constants.PartitionKeyFailed);
+            }
+            string index = req.Query[Constants.Index] ?? string.Empty;
+            if (string.IsNullOrEmpty(index))
+            {
+                return function.AddHeader(req, Constants.Index);
+            }
+
+            // データ削除
+            var message = await todo.DeleteByIndexAsync(index, partitionKey);
+            return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.DeleteSucceed, _word) : string.Format(Constants.DeleteFailed, _word, message));
+        }
+
+        /// <summary>
         /// 登録されているタスクのカテゴリ一覧を取得する
         /// </summary>
         /// <returns>カテゴリ一覧</returns>

@@ -8,6 +8,7 @@
 
         public static readonly string PartitionKey = "partitionKey";
         public static readonly string Id = "id";
+        public static readonly string Index = "index";
 
         public static readonly string DeserializeFailed = "送信されたデータのデシリアライズができません。";
         public static readonly string PartitionKeyFailed = "パーティションキーが指定されていません。";
