@@ -8,6 +8,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Library\AiResources\Prompties\CommunityToolkit.prompty" />
+    <None Remove="Library\AiResources\Prompties\ContextPrompt.prompty" />
+    <None Remove="Library\AiResources\Prompties\ContextPromptJson.prompty" />
     <None Remove="Library\AiResources\Prompties\ExamplePrompt.prompty" />
   </ItemGroup>
   <ItemGroup>
@@ -38,6 +40,8 @@
     <Folder Include="Library\Enums\" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Library\AiResources\Prompties\ContextPromptJson.prompty" />
+    <EmbeddedResource Include="Library\AiResources\Prompties\ContextPrompt.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\ExamplePrompt.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\CommunityToolkit.prompty" />
   </ItemGroup>
