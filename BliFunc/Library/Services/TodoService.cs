@@ -113,6 +113,20 @@ namespace BliFunc.Library.Services
             }
         }
 
+        public async Task<string> DeleteByIndexAsync(int index, string partitionKey)
+        {
+            var records = await GetAsync(partitionKey);
+            if (records == null)
+            {
+                return "タスク取得エラーが発生しました。";
+            }
+            if (records.Count <= index)
+            {
+                return "指定されたインデックスのタスクが存在しません。";
+            }
+            return await DeleteAsync(records[index].Id, partitionKey);
+        }
+
         public async Task CreateDatabaseAndContainerAsync()
         {
             if (string.IsNullOrEmpty(EndpointUri) || string.IsNullOrEmpty(PrimaryKey) || string.IsNullOrEmpty(DatabaseId) || string.IsNullOrEmpty(ContainerId))
