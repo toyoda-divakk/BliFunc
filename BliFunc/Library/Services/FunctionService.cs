@@ -5,12 +5,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using BliFunc.Library.Enums;
 using BliFunc.Library.Interfaces;
 using Microsoft.Azure.Functions.Worker.Http;
-using Microsoft.SemanticKernel;
-using Microsoft.SemanticKernel.ChatCompletion;
-using Microsoft.SemanticKernel.Connectors.OpenAI;
 
 namespace BliFunc.Library.Services;
 
