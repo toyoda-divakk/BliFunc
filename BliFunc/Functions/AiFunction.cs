@@ -45,8 +45,8 @@ namespace BliFunc.Functions
             var assembly = Assembly.GetExecutingAssembly();
             using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
             using StreamReader reader = new(stream);
-            string result = reader.ReadToEnd();
-            return reader.ReadToEnd();
+            var result = reader.ReadToEnd();
+            return result;
         }
     }
 }
