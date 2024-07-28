@@ -164,7 +164,7 @@ namespace BliFunc.Functions
             }
 
             // データ削除
-            var message = await todo.DeleteByIndexAsync(index, partitionKey);
+            var message = await todo.DeleteByIndexAsync(int.Parse(index), partitionKey);
             return function.AddHeader(req, string.IsNullOrWhiteSpace(message) ? string.Format(Constants.DeleteSucceed, _word) : string.Format(Constants.DeleteFailed, _word, message));
         }
 
