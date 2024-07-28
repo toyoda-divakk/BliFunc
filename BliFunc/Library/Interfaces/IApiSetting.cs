@@ -1,34 +1,10 @@
-﻿using BliFunc.Library.Enums;
-
-namespace BliFunc.Library.Interfaces;
+﻿namespace BliFunc.Library.Interfaces;
 
 /// <summary>
 /// APIに関する設定項目のインターフェース
 /// </summary>
 public interface IApiSetting
 {
-    /// <summary>
-    /// AI生成のサービス名
-    /// </summary>
-    GenerativeAI GenerativeAI
-    {
-        get;
-    }
-    /// <summary>
-    /// OpenAIのAPIキー
-    /// </summary>
-    string OpenAIKey
-    {
-        get;
-    }
-    /// <summary>
-    /// OpenAIのモデル名
-    /// </summary>
-    string OpenAIModel
-    {
-        get;
-    }
-
     /// <summary>
     /// AzureOpenAIのAPIキー
     /// </summary>
@@ -50,10 +26,4 @@ public interface IApiSetting
     {
         get;
     }
-
-    /// <summary>
-    /// APIテストが済んでいるか
-    /// ※面倒なのでtrueにしておく。後で実装するならfalseにする
-    /// </summary>
-    bool IsApiTested { get; }
 }

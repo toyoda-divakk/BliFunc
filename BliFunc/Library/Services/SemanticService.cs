@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BliFunc.Library.Enums;
 using BliFunc.Library.Interfaces;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -27,7 +26,33 @@ public class SemanticService : ISemanticService
 
     private Kernel _kernel = null!;
 
-    public string Test() => "Hello, work!";
+    public async Task<string> ExamplePromptTestAsync(IApiSetting settings, string promptyText)
+    {
+        // カーネルを作成
+        var kernel = Setup(settings);
+
+        // Prompty ファイルを読み込んで KernelFunction を作成
+#pragma warning disable SKEXP0040 // 種類は、評価の目的でのみ提供されています。将来の更新で変更または削除されることがあります。続行するには、この診断を非表示にします。
+        var prompty = kernel.CreateFunctionFromPrompty(promptyText);
+#pragma warning restore SKEXP0040
+
+        var answer = await prompty.InvokeAsync<string>(kernel,
+        new KernelArguments
+        {
+            ["question"] = "クラスの定義方法について教えてください。"
+        }) ?? string.Empty;
+        return answer;
+
+        // Streamingにする場合はこっち
+        //await foreach (var chunk in kernel.InvokeStreamingAsync<string>(
+        //    prompty,
+        //    new() { ["question"] = "クラス定義方法について教えてください。" }))
+        //{
+        //    Console.Write(chunk);
+        //}
+        //return "";
+    }
+
 
     /// <summary>
     /// APIキーからKernelを作成する
@@ -37,20 +62,17 @@ public class SemanticService : ISemanticService
     private static Kernel Setup(IApiSetting settings)
     {
         var builder = Kernel.CreateBuilder();
-        if (settings.GenerativeAI == GenerativeAI.AzureOpenAI)
-        {
-            builder.AddAzureOpenAIChatCompletion(
-                settings.AzureOpenAIModel,
-                settings.AzureOpenAIEndpoint,
-                settings.AzureOpenAIKey);
-        }
-        else
-        {
-            // OpenAIの場合
-            builder.AddOpenAIChatCompletion(
-                settings.OpenAIModel,
-                settings.OpenAIKey);
-        }
+        // Azureの場合
+        builder.AddAzureOpenAIChatCompletion(
+            settings.AzureOpenAIModel,
+            settings.AzureOpenAIEndpoint,
+            settings.AzureOpenAIKey);
+
+        //// OpenAIの場合
+        //builder.AddOpenAIChatCompletion(
+        //    settings.OpenAIModel,
+        //    settings.OpenAIKey);
+
         return builder.Build();
     }
 

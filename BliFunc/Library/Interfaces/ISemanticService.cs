@@ -32,7 +32,7 @@ public interface ISemanticService
     /// <param name="settings"></param>
     /// <param name="prompt"></param>
     /// <returns></returns>
-    public ChatHistory InitializeChat(IApiSetting settings, string prompt);
+    ChatHistory InitializeChat(IApiSetting settings, string prompt);
 
     /// <summary>
     /// チャットを生成する
@@ -42,17 +42,17 @@ public interface ISemanticService
     /// <param name="history">今までの会話</param>
     /// <param name="userMessage">ユーザの発言</param>
     /// <returns>返答、失敗した場合は空文字列</returns>
-    public Task<string> GenerateChatAsync(ChatHistory history, string userMessage);
+    Task<string> GenerateChatAsync(ChatHistory history, string userMessage);
 
-#nullable enable
     /// <summary>
     /// 最後のやり取りを削除して、ユーザが入力したものを返す
     /// ユーザが入力したものを削除しなかったらnull
     /// </summary>
     /// <param name="history"></param>
     /// <returns></returns>
-    public object? RemoveLastMessage(ChatHistory history);
+    object? RemoveLastMessage(ChatHistory history);
 
-    public string Test();
-#nullable disable
+
+    Task<string> ExamplePromptTestAsync(IApiSetting settings, string promptyText);
+
 }

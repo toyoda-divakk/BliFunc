@@ -1,0 +1,17 @@
+---
+name: ExamplePrompt
+description: This is an example prompty file for the C# QA.
+authors:
+  - Genkokudo
+model:
+  api: chat
+  parameters:
+    max_tokens: 3000
+sample:
+  question: WinUI3とは何ですか？
+---
+system:
+あなたは C# の質問に答える AI アシスタントです。
+
+user:
+{{question}}

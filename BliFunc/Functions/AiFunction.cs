@@ -21,36 +21,32 @@ namespace BliFunc.Functions
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<AiFunction>();
 
+
         [Function("AiTest")]
-        public HttpResponseData TestingValue([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public async Task<HttpResponseData> TestingValueAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
         {
             _logger.LogInformation("AIのテスト");
 
             var response = function.AddHeader(req);
+            var promptyText = GerResourceText("BliFunc.Library.AiResources.Prompties.ExamplePrompt.prompty");
+            response.WriteString(await semantic.ExamplePromptTestAsync(new ApiSetting(), promptyText));
 
-            var testingValue = Environment.GetEnvironmentVariable("TESTING_VALUE", EnvironmentVariableTarget.Process) ?? "TESTING_VALUEを設定してください。";
-            response.WriteString(testingValue);
 
             return response;
         }
 
-        [Function("FileLoadTest")]
-        public HttpResponseData FileLoadTest([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequestData req)
+        /// <summary>
+        /// 埋め込みリソースのテキストを取得する
+        /// </summary>
+        /// <param name="resourceName">"BliFunc.Library.AiResources.Prompties.CommunityToolkit.prompty"</param>
+        /// <returns>読み込んだテキスト</returns>
+        private static string GerResourceText(string resourceName)
         {
-            _logger.LogInformation("ファイル読み込みのテスト");
-
-            var response = function.AddHeader(req);
-
-            // リソースのCommunityToolkit.promptyを読み込む
             var assembly = Assembly.GetExecutingAssembly();
-            var resourceName = "BliFunc.Library.AiResources.Prompties.CommunityToolkit.prompty";
             using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
             using StreamReader reader = new(stream);
             string result = reader.ReadToEnd();
-
-            response.WriteString(result);
-
-            return response;
+            return reader.ReadToEnd();
         }
     }
 }
