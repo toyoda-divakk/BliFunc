@@ -22,16 +22,10 @@ namespace BliFunc.Library.Services;
 /// </summary>
 public class SemanticService : ISemanticService
 {
-    public async Task<string> TestAsync(IApiSetting settings) => await TestGenerativeAIAsync(settings, """Hello, world! と表示する C# のプログラムを書いてください。""");
-
-    private Kernel _kernel = null!;
-
-    public async Task<string> ExamplePromptTestAsync(IApiSetting settings, string promptyText)
+    public async Task<string> SimplePromptyAsync(IApiSetting settings, string promptyText)      // TODO: IApiSettingっていちいち送らなきゃダメ？固定なのに？
     {
-        // カーネルを作成
         var kernel = Setup(settings);
 
-        // Prompty ファイルを読み込んで KernelFunction を作成
 #pragma warning disable SKEXP0040 // 種類は、評価の目的でのみ提供されています。将来の更新で変更または削除されることがあります。続行するには、この診断を非表示にします。
         var prompty = kernel.CreateFunctionFromPrompty(promptyText);
 #pragma warning restore SKEXP0040
@@ -43,7 +37,7 @@ public class SemanticService : ISemanticService
         }) ?? string.Empty;
         return answer;
 
-        // Streamingにする場合はこっち
+        #region Streamingにする場合はこっち
         //await foreach (var chunk in kernel.InvokeStreamingAsync<string>(
         //    prompty,
         //    new() { ["question"] = "クラス定義方法について教えてください。" }))
@@ -51,6 +45,7 @@ public class SemanticService : ISemanticService
         //    Console.Write(chunk);
         //}
         //return "";
+        #endregion
     }
 
 
@@ -62,34 +57,31 @@ public class SemanticService : ISemanticService
     private static Kernel Setup(IApiSetting settings)
     {
         var builder = Kernel.CreateBuilder();
-        // Azureの場合
         builder.AddAzureOpenAIChatCompletion(
             settings.AzureOpenAIModel,
             settings.AzureOpenAIEndpoint,
             settings.AzureOpenAIKey);
 
-        //// OpenAIの場合
+        #region OpenAIの場合
         //builder.AddOpenAIChatCompletion(
         //    settings.OpenAIModel,
         //    settings.OpenAIKey);
+        #endregion
 
         return builder.Build();
     }
 
     /// <summary>
-    /// 接続テスト
+    /// プロンプト1つだけ送信してその応答を得る
     /// </summary>
     /// <param name="settings">API設定</param>
-    /// <param name="hello">送信文</param>
+    /// <param name="prompt">送信プロンプト</param>
     /// <returns></returns>
-    public async Task<string> TestGenerativeAIAsync(IApiSetting settings, string hello)
+    public async Task<string> SimpleGenerateAsync(IApiSetting settings, string prompt)
     {
         try
         {
             var kernel = Setup(settings);
-
-            // プロンプトを作成
-            var prompt = hello;
             var result = await kernel.InvokePromptAsync(prompt);
             return result.GetValue<string>()!;
         }
@@ -100,15 +92,6 @@ public class SemanticService : ISemanticService
     }
 
     /// <summary>
-    /// Kernelを現在の設定で初期化する。
-    /// </summary>
-    /// <param name="settings"></param>
-    private void Initialize(IApiSetting settings)
-    {
-        _kernel = Setup(settings);
-    }
-
-    /// <summary>
     /// チャットを生成する
     /// 履歴に追加する
     /// ※失敗した場合は空文字列を返すので呼び出し元で処理すること
@@ -116,9 +99,10 @@ public class SemanticService : ISemanticService
     /// <param name="history">今までの会話</param>
     /// <param name="userMessage">ユーザの発言</param>
     /// <returns>返答、失敗した場合は空文字列</returns>
-    public async Task<string> GenerateChatAsync(ChatHistory history, string userMessage)
+    public async Task<string> GenerateChatAsync(IApiSetting settings, ChatHistory history, string userMessage)
     {
-        var chatService = _kernel.GetRequiredService<IChatCompletionService>();
+        var kernel = Setup(settings);
+        var chatService = kernel.GetRequiredService<IChatCompletionService>();
         history.AddUserMessage(userMessage);
         var response = await chatService.GetChatMessageContentAsync(history);
         if (response.Items.FirstOrDefault() is TextContent responseText)
@@ -166,7 +150,6 @@ public class SemanticService : ISemanticService
     /// <returns></returns>
     public ChatHistory InitializeChat(IApiSetting settings, string prompt)
     {
-        Initialize(settings);
         var chatHistory = new ChatHistory();
         chatHistory.AddSystemMessage(prompt);
         return chatHistory;

@@ -29,7 +29,7 @@ namespace BliFunc.Functions
 
             var response = function.AddHeader(req);
             var promptyText = GerResourceText("BliFunc.Library.AiResources.Prompties.ExamplePrompt.prompty");
-            response.WriteString(await semantic.ExamplePromptTestAsync(new ApiSetting(), promptyText));
+            response.WriteString(await semantic.SimplePromptyAsync(new ApiSetting(), promptyText));
 
 
             return response;
