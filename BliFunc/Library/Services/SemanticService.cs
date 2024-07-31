@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Azure.AI.OpenAI;
 using BliFunc.Library.Interfaces;
 using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
@@ -91,6 +92,18 @@ public class SemanticService : ISemanticService
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
     /// <summary>
     /// チャットを生成する
     /// 履歴に追加する
@@ -115,6 +128,7 @@ public class SemanticService : ISemanticService
         return "";
     }
 #nullable enable
+    // 最後のやり取りを削除して、ユーザが入力したものを返す
     public object? RemoveLastMessage(ChatHistory history)
     {
         // historyが1件以下なら何もせずに終了
@@ -208,95 +222,8 @@ public class SemanticService : ISemanticService
     }
     #endregion
 
-    #region 関数を作る例
-    // 例
-    //        // テキストを要約する（これは熱力学の例）
-    //        var text1 = """
-    //熱力学の第1法則 - エネルギーは創造も破壊もできない。
-    //熱力学第2法則 - 自然発生的な過程では、宇宙のエントロピーは増大する。
-    //熱力学第3法則 - ゼロケルビンの完全な結晶はエントロピーがゼロである。
-    //""";
-
-    //var result = await GetSummaryExample(kernel, summarize, text1);
-    // Output:
-    //   Energy conserved, entropy increases, zero entropy at 0K.
-
-    /// <summary>
-    /// 要約を取得する例
-    /// </summary>
-    /// <param name="kernel"></param>
-    /// <param name="summarize">KernelFunction</param>
-    /// <param name="text"></param>
-    /// <returns></returns>
-    private static async Task<FunctionResult> GetSummaryExample(Kernel kernel, KernelFunction summarize, string text) => await kernel.InvokeAsync(summarize, new() { ["input"] = text });
-
-    /// <summary>
-    /// プロンプトから関数を作成する例
-    /// </summary>
-    /// <param name="kernel"></param>
-    /// <returns>テキストを要約する関数</returns>
-    private static KernelFunction CreateFunctionExample(Kernel kernel)
-    {
-        // inputじゃなくても、nameとかなんでもOK。argumentsと一致させること。
-        var prompt = """
-        {{$input}}
-        
-        One line TLDR with the fewest words.
-        """;
-
-        return kernel.CreateFunctionFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings { MaxTokens = 100 });
-    }
-
-    /// <summary>
-    /// プラグインに登録可能な関数の書き方例
-    /// </summary>
-    /// <param name="kernel"></param>
-    /// <returns></returns>
-    private static KernelFunction CreateNamedFunctionExample(Kernel kernel)
-    {
-        return kernel.CreateFunctionFromPrompt(
-            new PromptTemplateConfig("""
-                与えられた季節の季語を 3 つ挙げてください。
-
-                ### 季節
-                {{ $season }}
-                """)
-            {
-                Name = "Generate",  // プロンプトから呼び出すときの名前"{{ TestPlugin.Generate $season }}"
-                InputVariables = [
-                    new InputVariable { Name = "season", IsRequired = true },
-                ],
-            });
-    }
-
-    #endregion
-
 
 }
 
-// ネイティブ関数を持ったプラグインの定義
-// プラグインの登録は Kernel の Plugins.AddFromXXXX
-// すると、プロンプトから"{{ プラグイン名.関数名 引数名='値' 引数名='値'}}"で呼び出せるようになる
-// {{ UtilsExample.Add x='1' y='2' }}
-// {{ UtilsExample.LocalNow }}
 
-//[Description("四則演算プラグイン")]    // これを書くと、エージェント機能で利用されるようになるので書いた方が良い。System.ComponentModelをusingする
-public class UtilsExample(TimeProvider timeProvider)
-{
-    // 現在時間を返す
-    [KernelFunction]
-    public string LocalNow() => timeProvider.GetLocalNow().ToString("u");
-
-    // 2つの数値を足す
-    [KernelFunction]
-    //[Description("足し算を行います。")]    // これを書くと、エージェント機能で利用されるようになるので書いた方が良い。
-    //[return: Description("計算結果")]
-    public int Add(int x, int y) => x + y;
-}
-
-// 関数化したプロンプトもプラグインとして登録できる。その場合はAddFromFunctionsを使う。
-// kernel.Plugins.AddFromFunctions("TestPlugin", [func1]);  // 複数の関数が登録できる。
-// CreateNamedFunctionExampleはName = "Generate"なので、"{{ TestPlugin.Generate $season }}"で呼び出せる
-
-// エージェント機能は、CreateFunctionFromPromptで、executionSettings: new OpenAIPromptExecutionSettings{ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions} を設定すると自動的にやってくれるようになる。
 
