@@ -41,7 +41,9 @@ namespace BliFunc.Functions
         {
             _logger.LogInformation("Donpenの実行");
             // リクエストからstringを取得
-            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            var requestBody = (await new StreamReader(req.Body).ReadToEndAsync());
+            // 先頭と末尾のダブルクォーテーションを削除
+            requestBody = requestBody.Substring(1, requestBody.Length - 2);
 
 
             var response = function.AddHeader(req);
