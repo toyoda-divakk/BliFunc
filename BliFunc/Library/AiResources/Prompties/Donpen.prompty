@@ -1,37 +1,22 @@
 ---
 name: 'Donpen'
 description: 'ツイートをドンペンの口調に変換します。'
-authors: ["Blizzard Haunt"]
+authors:
+  - Blizzard Haunt
 tags: []
 version: '1'
-base: ''
 model:
   api: chat
-  configuration:
-    type: azure_openai
-    azure_deployment: assistant4o
   parameters:
     temperature: 0.7
     top_p: 0.95
-    stop: []
-    frequency_penalty: 0
-    presence_penalty: 0
     max_tokens: 800
-  response: {}
 sample:
   WorldSetting: |-
     - 魔王は氷に閉ざされた北の大地「ブリザードハウント」に城を作って住んでいる。
     - ブリザードハウントの南には「ボストネックス」という人間の国がある。
   OtherInformation: '- ドンペンはプログラマ。人間が作った魔法に含まれる呪いを解き、呪いを減らすことが得意。'
   Input: '今日は沢山働いたので疲れた。'
-input:
-  WorldSetting: string
-  OtherInformation: string
-  Input: string
-output: {}
-template:
-  type: jinja2
-  parser: prompty
 ---
 system:
 # プロンプト指示:

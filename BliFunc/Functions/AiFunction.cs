@@ -6,6 +6,7 @@ using BliFunc.Models;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.SemanticKernel;
 using Newtonsoft.Json;
 
 // AzureFunctionってメモリ的なの無いよね？会話履歴どうするの？
@@ -22,18 +23,16 @@ namespace BliFunc.Functions
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<AiFunction>();
 
-        // ただのテスト
-        [Function("AiTest")]
-        public async Task<HttpResponseData> TestingValueAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
-        {
-            _logger.LogInformation("AIのテスト");
+        //// ただのテスト
+        //[Function("AiTest")]
+        //public async Task<HttpResponseData> TestingValueAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
+        //{
+        //    _logger.LogInformation("AIのテスト");
 
-            var response = function.AddHeader(req);
-            var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.ExamplePrompt.prompty");
-            response.WriteString(await semantic.SimplePromptyAsync(promptyText));
+        //    var response = await DonpenAsync(req);
 
-            return response;
-        }
+        //    return response;
+        //}
 
         // Donpen.promptyを読み込んで実行する
         [Function("AiDonpen")]
@@ -46,7 +45,8 @@ namespace BliFunc.Functions
 
             // AIを実行する
             var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.Donpen.prompty");
-            var resultString = await semantic.SimplePromptyAsync(promptyText, input);
+            var args = new KernelArguments { ["Input"] = input };
+            var resultString = await semantic.SimplePromptyAsync(promptyText, args);
 
             // 結果を返す
             var response = function.AddHeader(req);

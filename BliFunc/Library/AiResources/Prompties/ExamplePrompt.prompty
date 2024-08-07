@@ -8,10 +8,10 @@ model:
   parameters:
     max_tokens: 3000
 sample:
-  question: WinUI3とは何ですか？
+  Input: WinUI3とは何ですか？
 ---
 system:
 あなたは C# の質問に答える AI アシスタントです。
 
 user:
-{{question}}
+{{Input}}

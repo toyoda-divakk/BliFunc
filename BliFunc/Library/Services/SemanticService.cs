@@ -24,40 +24,6 @@ namespace BliFunc.Library.Services;
 public class SemanticService : ISemanticService
 {
     /// <summary>
-    /// promptyファイルの内容で送信し、応答を1つ得る
-    /// 内容の指定などはできない
-    /// </summary>
-    /// <param name="promptyText">promptyファイルの内容</param>
-    /// <param name="settings">API設定</param>
-    /// <returns></returns>
-    public async Task<string> SimplePromptyAsync(string promptyText, IApiSetting? settings = null)
-    {
-        settings ??= new ApiSetting();
-        var kernel = Setup(settings);
-
-#pragma warning disable SKEXP0040 // 種類は、評価の目的でのみ提供されています。将来の更新で変更または削除されることがあります。続行するには、この診断を非表示にします。
-        var prompty = kernel.CreateFunctionFromPrompty(promptyText);
-#pragma warning restore SKEXP0040
-
-        var answer = await prompty.InvokeAsync<string>(kernel,
-        new KernelArguments
-        {
-            ["question"] = "クラスの定義方法について教えてください。"
-        }) ?? string.Empty;
-        return answer;
-
-        #region Streamingにする場合はこっち
-        //await foreach (var chunk in kernel.InvokeStreamingAsync<string>(
-        //    prompty,
-        //    new() { ["question"] = "クラス定義方法について教えてください。" }))
-        //{
-        //    Console.Write(chunk);
-        //}
-        //return "";
-        #endregion
-    }
-
-    /// <summary>
     /// APIキーからKernelを作成する
     /// </summary>
     /// <param name="settings">API設定</param>
@@ -102,6 +68,19 @@ public class SemanticService : ISemanticService
         }
     }
 
+    /// <summary>
+    /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
+    /// 引数はInput固定
+    /// </summary>
+    /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="input">AIへの入力</param>
+    /// <param name="settings">API設定</param>
+    /// <returns></returns>
+    public async Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null)
+    {
+        var args = new KernelArguments { ["Input"] = input };
+        return await SimplePromptyAsync(promptyText, args, settings);
+    }
 
     /// <summary>
     /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
@@ -110,7 +89,7 @@ public class SemanticService : ISemanticService
     /// <param name="input">AIへの入力</param>
     /// <param name="settings">API設定</param>
     /// <returns></returns>
-    public async Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null)
+    public async Task<string> SimplePromptyAsync(string promptyText, KernelArguments input, IApiSetting? settings = null)
     {
         settings ??= new ApiSetting();
         var kernel = Setup(settings);
@@ -119,14 +98,9 @@ public class SemanticService : ISemanticService
         var prompty = kernel.CreateFunctionFromPrompty(promptyText);
 #pragma warning restore SKEXP0040
 
-        var answer = await prompty.InvokeAsync<string>(kernel,
-        new KernelArguments
-        {
-            ["Input"] = input
-        }) ?? string.Empty;
+        var answer = await prompty.InvokeAsync<string>(kernel, input) ?? string.Empty;
         return answer;
     }
-
 
 
 

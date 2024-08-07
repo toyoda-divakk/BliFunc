@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.ChatCompletion;
 
 namespace BliFunc.Library.Interfaces;
@@ -13,22 +14,14 @@ namespace BliFunc.Library.Interfaces;
 public interface ISemanticService
 {
     /// <summary>
-    /// promptyファイルの内容で送信し、応答を1つ得る
-    /// 内容の指定などはできない
+    /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
+    /// 引数はInput固定
     /// </summary>
     /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="input">AIへの入力</param>
     /// <param name="settings">API設定</param>
     /// <returns></returns>
-    Task<string> SimplePromptyAsync(string promptyText, IApiSetting? settings = null);
-
-    /// <summary>
-    /// プロンプト1つだけ送信してその応答を得る
-    /// 引数は完全固定なので、ExamplePrompt専用
-    /// </summary>
-    /// <param name="prompt">送信プロンプト</param>
-    /// <param name="settings">API設定</param>
-    /// <returns></returns>
-    Task<string> SimpleGenerateAsync(string prompt, IApiSetting? settings = null);
+    Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null);
 
     /// <summary>
     /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
@@ -37,8 +30,7 @@ public interface ISemanticService
     /// <param name="input">AIへの入力</param>
     /// <param name="settings">API設定</param>
     /// <returns></returns>
-    Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null);
-
+    Task<string> SimplePromptyAsync(string promptyText, KernelArguments input, IApiSetting? settings = null);
 
 
 
