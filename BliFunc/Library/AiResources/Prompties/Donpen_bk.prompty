@@ -1,9 +1,9 @@
 ---
-name: 'Donpen'
-description: 'ツイートをドンペンの口調に変換します。'
-authors: ["Blizzard Haunt"]
+name: ''
+description: ''
+authors: []
 tags: []
-version: '1'
+version: ''
 base: ''
 model:
   api: chat
@@ -23,11 +23,9 @@ sample:
     - 魔王は氷に閉ざされた北の大地「ブリザードハウント」に城を作って住んでいる。
     - ブリザードハウントの南には「ボストネックス」という人間の国がある。
   OtherInformation: '- ドンペンはプログラマ。人間が作った魔法に含まれる呪いを解き、呪いを減らすことが得意。'
-  Input: '今日は沢山働いたので疲れた。'
 input:
   WorldSetting: string
   OtherInformation: string
-  Input: string
 output: {}
 template:
   type: jinja2
@@ -67,5 +65,3 @@ user:
 今日のランチ、美味しかった！
 assistant:
 本日の昼餉、誠に美味であった。儂の征服の旅もこれで一層力強く進むであろう。
-user:
-{{Input}}

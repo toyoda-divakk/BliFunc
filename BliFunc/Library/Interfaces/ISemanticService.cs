@@ -23,13 +23,21 @@ public interface ISemanticService
 
     /// <summary>
     /// プロンプト1つだけ送信してその応答を得る
+    /// 引数は完全固定なので、ExamplePrompt専用
     /// </summary>
     /// <param name="prompt">送信プロンプト</param>
     /// <param name="settings">API設定</param>
     /// <returns></returns>
     Task<string> SimpleGenerateAsync(string prompt, IApiSetting? settings = null);
 
-
+    /// <summary>
+    /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
+    /// </summary>
+    /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="input">AIへの入力</param>
+    /// <param name="settings">API設定</param>
+    /// <returns></returns>
+    Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null);
 
 
 

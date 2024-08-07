@@ -40,22 +40,27 @@ namespace BliFunc.Functions
         public async Task<HttpResponseData> DonpenAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Post)] HttpRequestData req)
         {
             _logger.LogInformation("Donpenの実行");
-            // リクエストからstringを取得
-            var requestBody = (await new StreamReader(req.Body).ReadToEndAsync());
-            // 先頭と末尾のダブルクォーテーションを削除
-            requestBody = requestBody.Substring(1, requestBody.Length - 2);
 
+            // リクエストからstringを取得する
+            var input = await GetMessageAsync(req);
 
+            // AIを実行する
+            var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.Donpen.prompty");
+            var resultString = await semantic.SimplePromptyAsync(promptyText, input);
+
+            // 結果を返す
             var response = function.AddHeader(req);
-            //var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.Donpen.prompty");
-            //response.WriteString(await semantic.SimplePromptyAsync(promptyText));
-
-            response.WriteString(requestBody);
+            response.WriteString(resultString);
             return response;
-        }   // ※これだと実行できない。入力が無いから。ExamplePromptを参照してuserの入力を定義すること。
+        }
 
 
-
+        // HttpRequestDataからstringのメッセージを取り出す
+        private async Task<string> GetMessageAsync(HttpRequestData req)
+        {
+            var requestBody = (await new StreamReader(req.Body).ReadToEndAsync());
+            return requestBody.Substring(1, requestBody.Length - 2);
+        }
 
     }
 }

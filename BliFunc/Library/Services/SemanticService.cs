@@ -82,6 +82,7 @@ public class SemanticService : ISemanticService
 
     /// <summary>
     /// プロンプト1つだけ送信してその応答を得る
+    /// 引数は完全固定なので、ExamplePrompt専用
     /// </summary>
     /// <param name="prompt">送信プロンプト</param>
     /// <param name="settings">API設定</param>
@@ -102,6 +103,29 @@ public class SemanticService : ISemanticService
     }
 
 
+    /// <summary>
+    /// promptyファイルの内容と単一の入力を送信し、応答を1つ得る
+    /// </summary>
+    /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="input">AIへの入力</param>
+    /// <param name="settings">API設定</param>
+    /// <returns></returns>
+    public async Task<string> SimplePromptyAsync(string promptyText, string input, IApiSetting? settings = null)
+    {
+        settings ??= new ApiSetting();
+        var kernel = Setup(settings);
+
+#pragma warning disable SKEXP0040 // 種類は、評価の目的でのみ提供されています。将来の更新で変更または削除されることがあります。続行するには、この診断を非表示にします。
+        var prompty = kernel.CreateFunctionFromPrompty(promptyText);
+#pragma warning restore SKEXP0040
+
+        var answer = await prompty.InvokeAsync<string>(kernel,
+        new KernelArguments
+        {
+            ["Input"] = input
+        }) ?? string.Empty;
+        return answer;
+    }
 
 
 
