@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Functions.Worker.Http;
@@ -20,4 +21,11 @@ public interface IFunctionService
     /// <param name="message"></param>
     /// <returns></returns>
     public HttpResponseData AddHeader(HttpRequestData req, string? message = null);
+
+    /// <summary>
+    /// 埋め込みリソースのテキストを取得する
+    /// </summary>
+    /// <param name="resourceName">"BliFunc.Library.AiResources.Prompties.CommunityToolkit.prompty"</param>
+    /// <returns>読み込んだテキスト</returns>
+    public string GerResourceText(string resourceName);
 }

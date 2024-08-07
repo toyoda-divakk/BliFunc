@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using BliFunc.Library.Interfaces;
@@ -24,6 +25,20 @@ public class FunctionService : IFunctionService
             response.WriteString(message);
         }
         return response;
+    }
+
+    /// <summary>
+    /// 埋め込みリソースのテキストを取得する
+    /// </summary>
+    /// <param name="resourceName">"BliFunc.Library.AiResources.Prompties.CommunityToolkit.prompty"</param>
+    /// <returns>読み込んだテキスト</returns>
+    public string GerResourceText(string resourceName)
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
+        using StreamReader reader = new(stream);
+        var result = reader.ReadToEnd();
+        return result;
     }
 }
 

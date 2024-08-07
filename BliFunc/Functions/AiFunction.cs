@@ -1,5 +1,6 @@
 using System.Net;
 using System.Reflection;
+using BliFunc.Library;
 using BliFunc.Library.Interfaces;
 using BliFunc.Models;
 using Microsoft.Azure.Functions.Worker;
@@ -21,32 +22,38 @@ namespace BliFunc.Functions
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<AiFunction>();
 
-
+        // ただのテスト
         [Function("AiTest")]
-        public async Task<HttpResponseData> TestingValueAsync([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequestData req)
+        public async Task<HttpResponseData> TestingValueAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
         {
             _logger.LogInformation("AIのテスト");
 
             var response = function.AddHeader(req);
-            var promptyText = GerResourceText("BliFunc.Library.AiResources.Prompties.ExamplePrompt.prompty");
-            response.WriteString(await semantic.SimplePromptyAsync(new ApiSetting(), promptyText));
-
+            var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.ExamplePrompt.prompty");
+            response.WriteString(await semantic.SimplePromptyAsync(promptyText));
 
             return response;
         }
 
-        /// <summary>
-        /// 埋め込みリソースのテキストを取得する
-        /// </summary>
-        /// <param name="resourceName">"BliFunc.Library.AiResources.Prompties.CommunityToolkit.prompty"</param>
-        /// <returns>読み込んだテキスト</returns>
-        private static string GerResourceText(string resourceName)
+        // Donpen.promptyを読み込んで実行する
+        [Function("AiDonpen")]
+        public async Task<HttpResponseData> DonpenAsync([HttpTrigger(AuthorizationLevel.Function, Constants.Post)] HttpRequestData req)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            using Stream stream = assembly.GetManifestResourceStream(resourceName)!;
-            using StreamReader reader = new(stream);
-            var result = reader.ReadToEnd();
-            return result;
-        }
+            _logger.LogInformation("Donpenの実行");
+            // リクエストからstringを取得
+            var requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+
+
+            var response = function.AddHeader(req);
+            //var promptyText = function.GerResourceText("BliFunc.Library.AiResources.Prompties.Donpen.prompty");
+            //response.WriteString(await semantic.SimplePromptyAsync(promptyText));
+
+            response.WriteString(requestBody);
+            return response;
+        }   // ※これだと実行できない。入力が無いから。ExamplePromptを参照してuserの入力を定義すること。
+
+
+
+
     }
 }

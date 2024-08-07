@@ -23,8 +23,16 @@ namespace BliFunc.Library.Services;
 /// </summary>
 public class SemanticService : ISemanticService
 {
-    public async Task<string> SimplePromptyAsync(IApiSetting settings, string promptyText)      // TODO: IApiSettingっていちいち送らなきゃダメ？固定なのに？
+    /// <summary>
+    /// promptyファイルの内容で送信し、応答を1つ得る
+    /// 内容の指定などはできない
+    /// </summary>
+    /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="settings">API設定</param>
+    /// <returns></returns>
+    public async Task<string> SimplePromptyAsync(string promptyText, IApiSetting? settings = null)
     {
+        settings ??= new ApiSetting();
         var kernel = Setup(settings);
 
 #pragma warning disable SKEXP0040 // 種類は、評価の目的でのみ提供されています。将来の更新で変更または削除されることがあります。続行するには、この診断を非表示にします。
@@ -49,14 +57,14 @@ public class SemanticService : ISemanticService
         #endregion
     }
 
-
     /// <summary>
     /// APIキーからKernelを作成する
     /// </summary>
-    /// <param name="isAzure">Azureならtrue, OpenAIならfalse</param>
+    /// <param name="settings">API設定</param>
     /// <returns></returns>
-    private static Kernel Setup(IApiSetting settings)
+    private static Kernel Setup(IApiSetting? settings)
     {
+        settings ??= new ApiSetting();
         var builder = Kernel.CreateBuilder();
         builder.AddAzureOpenAIChatCompletion(
             settings.AzureOpenAIModel,
@@ -75,11 +83,12 @@ public class SemanticService : ISemanticService
     /// <summary>
     /// プロンプト1つだけ送信してその応答を得る
     /// </summary>
-    /// <param name="settings">API設定</param>
     /// <param name="prompt">送信プロンプト</param>
+    /// <param name="settings">API設定</param>
     /// <returns></returns>
-    public async Task<string> SimpleGenerateAsync(IApiSetting settings, string prompt)
+    public async Task<string> SimpleGenerateAsync(string prompt, IApiSetting? settings = null)
     {
+        settings ??= new ApiSetting();
         try
         {
             var kernel = Setup(settings);
@@ -100,10 +109,6 @@ public class SemanticService : ISemanticService
 
 
 
-
-
-
-
     /// <summary>
     /// チャットを生成する
     /// 履歴に追加する
@@ -111,9 +116,11 @@ public class SemanticService : ISemanticService
     /// </summary>
     /// <param name="history">今までの会話</param>
     /// <param name="userMessage">ユーザの発言</param>
+    /// <param name="settings">API設定</param>
     /// <returns>返答、失敗した場合は空文字列</returns>
-    public async Task<string> GenerateChatAsync(IApiSetting settings, ChatHistory history, string userMessage)
+    public async Task<string> GenerateChatAsync(ChatHistory history, string userMessage, IApiSetting? settings = null)
     {
+        settings ??= new ApiSetting();
         var kernel = Setup(settings);
         var chatService = kernel.GetRequiredService<IChatCompletionService>();
         history.AddUserMessage(userMessage);
@@ -154,24 +161,25 @@ public class SemanticService : ISemanticService
         // AuthorRole.Toolの時は想定しない
         return null;
     }
-#nullable disable
 
     /// <summary>
     /// 設定とプロンプトを指定してチャットを生成する
     /// </summary>
-    /// <param name="settings"></param>
     /// <param name="prompt"></param>
+    /// <param name="settings"></param>
     /// <returns></returns>
-    public ChatHistory InitializeChat(IApiSetting settings, string prompt)
+    public ChatHistory InitializeChat(string prompt, IApiSetting? settings = null)
     {
+        settings ??= new ApiSetting();
         var chatHistory = new ChatHistory();
         chatHistory.AddSystemMessage(prompt);
         return chatHistory;
     }
 
     #region チャットを作る例
-    private static async Task<string> ChatTestAsync(IApiSetting settings)
+    private static async Task<string> ChatTestAsync(IApiSetting? settings = null)
     {
+        settings ??= new ApiSetting();
 
         // Chat の履歴を作成
         var chatHistory = new ChatHistory();
@@ -216,12 +224,14 @@ public class SemanticService : ISemanticService
         var response = await chatService.GetChatMessageContentAsync(chatHistory);
         if (response.Items.FirstOrDefault() is TextContent responseText)
         {
-            return responseText.Text;
+            return responseText.Text!;
         }
         return "No response";
     }
+
     #endregion
 
+#nullable disable
 
 }
 

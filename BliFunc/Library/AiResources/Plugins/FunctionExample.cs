@@ -23,6 +23,8 @@ namespace BliFunc.Library.AiResources.Plugins
     // プラグインではない。（プラグイン登録も可能だが、Descriptionを付けること）
 
 
+    // Function Callingを作っておくと、手順が決まり切ったタスクを作りやすい。
+
     /// <summary>
     /// 関数を作る例と、それを単発で呼び出すメソッドの例
     /// </summary>

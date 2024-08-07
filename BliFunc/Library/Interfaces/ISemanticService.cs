@@ -16,26 +16,32 @@ public interface ISemanticService
     /// promptyファイルの内容で送信し、応答を1つ得る
     /// 内容の指定などはできない
     /// </summary>
-    /// <param name="settings"></param>
     /// <param name="promptyText">promptyファイルの内容</param>
+    /// <param name="settings">API設定</param>
     /// <returns></returns>
-    Task<string> SimplePromptyAsync(IApiSetting settings, string promptyText);
+    Task<string> SimplePromptyAsync(string promptyText, IApiSetting? settings = null);
 
     /// <summary>
     /// プロンプト1つだけ送信してその応答を得る
     /// </summary>
-    /// <param name="settings">API設定</param>
     /// <param name="prompt">送信プロンプト</param>
+    /// <param name="settings">API設定</param>
     /// <returns></returns>
-    Task<string> SimpleGenerateAsync(IApiSetting settings, string hello);
+    Task<string> SimpleGenerateAsync(string prompt, IApiSetting? settings = null);
+
+
+
+
+
+
 
     /// <summary>
     /// 設定とプロンプトを指定してチャットを生成する
     /// </summary>
-    /// <param name="settings"></param>
-    /// <param name="prompt"></param>
+    /// <param name="prompt">送信プロンプト</param>
+    /// <param name="settings">API設定</param>
     /// <returns></returns>
-    ChatHistory InitializeChat(IApiSetting settings, string prompt);
+    ChatHistory InitializeChat(string prompt, IApiSetting? settings = null);
 
     /// <summary>
     /// チャットを生成する
@@ -44,8 +50,9 @@ public interface ISemanticService
     /// </summary>
     /// <param name="history">今までの会話</param>
     /// <param name="userMessage">ユーザの発言</param>
+    /// <param name="settings"></param>
     /// <returns>返答、失敗した場合は空文字列</returns>
-    Task<string> GenerateChatAsync(IApiSetting settings, ChatHistory history, string userMessage);
+    Task<string> GenerateChatAsync(ChatHistory history, string userMessage, IApiSetting? settings = null);
 
     /// <summary>
     /// 最後のやり取りを削除して、ユーザが入力したものを返す
