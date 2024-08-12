@@ -10,6 +10,10 @@
         public static readonly string Id = "id";
         public static readonly string Index = "index";
 
+        public static readonly string Name = "name";
+        public static readonly string NameFailed = "名前が指定されていません。";
+        //public static readonly string Message = "message";
+
         public static readonly string DeserializeFailed = "送信されたデータのデシリアライズができません。";
         public static readonly string PartitionKeyFailed = "パーティションキーが指定されていません。";
         public static readonly string IdFailed = "IDが指定されていません。";

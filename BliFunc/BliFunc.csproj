@@ -12,6 +12,7 @@
     <None Remove="Library\AiResources\Prompties\ContextPromptJson.prompty" />
     <None Remove="Library\AiResources\Prompties\Donpen.prompty" />
     <None Remove="Library\AiResources\Prompties\Donpen_bk.prompty" />
+    <None Remove="Library\AiResources\Prompties\EnglishComment.prompty" />
     <None Remove="Library\AiResources\Prompties\ExamplePrompt.prompty" />
   </ItemGroup>
   <ItemGroup>
@@ -43,6 +44,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Library\AiResources\Prompties\ContextPromptJson.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\ContextPrompt.prompty" />
+    <EmbeddedResource Include="Library\AiResources\Prompties\EnglishComment.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\Donpen_bk.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\Donpen.prompty" />
     <EmbeddedResource Include="Library\AiResources\Prompties\ExamplePrompt.prompty" />
