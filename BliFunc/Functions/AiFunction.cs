@@ -47,6 +47,15 @@ namespace BliFunc.Functions
             return await SimpleCallAiAsync(req, "CommunityToolkit");
         }
 
+        // Aiで使用できるname一覧を取得します。
+        [Function("AiList")]
+        public HttpResponseData AiList([HttpTrigger(AuthorizationLevel.Function, Constants.Get)] HttpRequestData req)
+        {
+            var response = function.AddHeader(req);
+            response.WriteString("Donpen\nEnglishComment\nCommunityToolkit");
+            return response;
+        }
+
         /// <summary>
         /// 任意のプロンプトを読み込んで実行する
         /// クエリパラメータにプロンプト名を指定する
