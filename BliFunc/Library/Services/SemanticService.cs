@@ -28,7 +28,7 @@ public class SemanticService : ISemanticService
     /// </summary>
     /// <param name="settings">API設定</param>
     /// <returns></returns>
-    private static Kernel Setup(IApiSetting? settings)
+    public static Kernel Setup(IApiSetting? settings)
     {
         settings ??= new ApiSetting();
         var builder = Kernel.CreateBuilder();

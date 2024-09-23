@@ -14,8 +14,7 @@ using Newtonsoft.Json;
 // ただし、毎回読み書きはしない。開始時と終了時のみ。
 // 途中の会話履歴は、クライアントに保持する。
 
-// Promptyファイルはどう保存する？
-// DBじゃなくファイルで。このプロジェクトに持たせる。
+// Promptyファイルはこのプロジェクトに持たせる。
 
 namespace BliFunc.Functions
 {

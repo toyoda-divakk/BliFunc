@@ -34,7 +34,7 @@ public interface ISemanticService
 
 
 
-
+    // Note:チャットはローカルに持たせるから、AzureFunctionでは保持しないよね。
     /// <summary>
     /// 設定とプロンプトを指定してチャットを生成する
     /// </summary>
