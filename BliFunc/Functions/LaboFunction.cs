@@ -23,8 +23,7 @@ namespace BliFunc.Functions
     /// </summary>
     /// <param name="loggerFactory"></param>
     /// <param name="function"></param>
-    /// <param name="semantic"></param>
-    public class LaboFunction(ILoggerFactory loggerFactory, IFunctionService function, ISemanticService semantic)
+    public class LaboFunction(ILoggerFactory loggerFactory, IFunctionService function)
     {
         private readonly ILogger _logger = loggerFactory.CreateLogger<AiFunction>();
 

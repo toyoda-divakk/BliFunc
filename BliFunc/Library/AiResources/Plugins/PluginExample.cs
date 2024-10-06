@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace BliFunc.Library.AiResources.Plugins
 {
     // promptyからプラグインを作れるかは不明
+    // 次はpromptyからプラグインを作ってみよう？
 
 
     // 使い方
@@ -49,7 +50,7 @@ namespace BliFunc.Library.AiResources.Plugins
         [KernelFunction]
         [Description("季節の季語を3つ挙げます。")]
         [return: Description("季節に対する3つの季語")]
-        private static KernelFunction CreateNamedFunctionExample(Kernel kernel)
+        public static KernelFunction CreateNamedFunctionExample(Kernel kernel)
         {
             return kernel.CreateFunctionFromPrompt(
                 new PromptTemplateConfig("""
@@ -61,7 +62,7 @@ namespace BliFunc.Library.AiResources.Plugins
                 {
                     Name = "Generate",  // プロンプトから呼び出すときの名前"{{ TestPlugin.Generate $season }}"
                     InputVariables = [
-                        new InputVariable { Name = "season", IsRequired = true, Description="季節" },
+                        new InputVariable { Name = "season", IsRequired = true, Description="季節" },  // プロンプトから呼び出すときの引数
                     ],
                 });
         }
@@ -72,6 +73,8 @@ namespace BliFunc.Library.AiResources.Plugins
     // インスタンス化してから登録する場合はAddFromObjectを使う。
     //kernel.Plugins.AddFromType<PluginExample>();
 
+
+    // ※ここから下は使わない予定
     // プロンプトの中から何を使うか、AIに自動で考えて呼んでもらうには
     // CreateFunctionFromPromptの引数で executionSettings: new OpenAIPromptExecutionSettings{ToolCallBehavior = ToolCallBehavior.AutoInvokeKernelFunctions} を指定する。
     // #pragma warning disable SKEXP0060が必要。

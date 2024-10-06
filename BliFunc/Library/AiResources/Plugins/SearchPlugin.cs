@@ -11,14 +11,13 @@ namespace BliFunc.Library.AiResources.Plugins;
 // Tools を試そう
 // Semantic Kernel ではプラグインを自動的にツールに変換してくれる
 
-/// <summary>
-/// インターネット検索プラグイン
-/// </summary>
+[Description("インターネット検索に関する機能")]
 internal class SearchPlugin
 {
     [KernelFunction]
     [Description("インターネットを検索する。")]
-    public async Task<string> SearchAsync(string query)
+    [return: Description("検索結果")]
+    public async Task<string> SearchAsync([Description("検索キーワード")] string query)
     {
         Console.WriteLine($"インターネットで検索中: {query}");
         // インターネットにいってる風のスリープ処理
